@@ -8,13 +8,14 @@
           </v-toolbar>
           <v-card-text>
             <v-form>
-              <v-text-field v-model="username" prepend-icon="mdi-account" name="username" label="Nome" type="text"></v-text-field>
-              <v-text-field v-model="password" id="password" prepend-icon="mdi-lock" name="password" label="Password" type="password"></v-text-field>
+              <v-text-field v-model="username" prepend-icon="mdi-account" name="username" label="Nome" type="text" required></v-text-field>
+              <v-text-field v-model="password" id="password" prepend-icon="mdi-lock" name="password" label="Password" type="password" required></v-text-field>
             </v-form>
           </v-card-text>
-          <v-card-actions>
+          <v-alert class="ma-4" border="left" color="error" v-if="error" >Nome utente o password non validi</v-alert>
+          <v-card-actions class="pa-4">
             <v-spacer></v-spacer>
-            <v-btn color="primary px-10 py-6 ma-4" @click="login()">Login</v-btn>
+            <v-btn color="primary" @click="login()" :disabled="loginDisabled()">Login</v-btn>
             <v-spacer></v-spacer>
           </v-card-actions>
         </v-card>
@@ -34,18 +35,25 @@ export default Vue.extend({
   data() {
     return {
       username: "",
-      password: ""
+      password: "",
+      error: false,
     };
   },
 
-  components: {},
-
   methods: {
     login: async function() {
+      this.error = false;
       const user = await apiService.auth.login(this.username, this.password);
-      apiService.setToken(user.token);
-      userService.login(user);
-      this.$router.push("/");
+      if (user) {
+        apiService.setToken(user.token);
+        userService.login(user);
+        this.$router.push("/");
+      } else {
+        this.error = true;
+      }
+    },
+    loginDisabled: function() {
+      return !this.username || !this.password;
     }
   }
 });

@@ -10,9 +10,13 @@ class AuthService {
         this.baseUrl += '/auth';
     }
 
-    async login(username: string, password: string): Promise<UserDTO> {
-        const res = await this.axios.post(this.baseUrl + '/login', { username, password });
-        return res.data;
+    async login(username: string, password: string): Promise<UserDTO | null> {
+        try {
+            const res = await this.axios.post(this.baseUrl + '/login', { username, password });
+            return res.data;
+        } catch {
+            return null;
+        }
     }    
 
 }

@@ -8,7 +8,7 @@
   </v-app-bar>
 
   <v-navigation-drawer clipped permanent app v-if="getUsername()">
-    <!-- -->
+    <Menu />
   </v-navigation-drawer>
 
   <v-main>
@@ -26,9 +26,11 @@
 <script lang="ts">
 import Vue from 'vue';
 import userService from './services/user.service';
+import Menu from './components/Menu.vue';
 
 export default Vue.extend({
   name: 'App',
+  components: { Menu },
 
   data: () => ({
   }),
