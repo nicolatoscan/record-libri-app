@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import Home from '../views/Home.vue'
+import Login from '../views/Login.vue'
+import userService from '../services/user.service'
 
 Vue.use(VueRouter)
 
@@ -9,6 +11,11 @@ const routes: Array<RouteConfig> = [
     path: '/',
     name: 'Home',
     component: Home
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login
   },
   {
     path: '/about',
@@ -25,5 +32,16 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.name == 'Login' || userService.isLoggedIn()) {
+    next();
+  } else {
+    next({
+      path: "/login",
+      params: { nextUrl: to.fullPath },
+    });
+  }
+});
 
 export default router

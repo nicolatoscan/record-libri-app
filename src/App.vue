@@ -3,19 +3,16 @@
 
   <v-app-bar clipped-left app color="primary">
   <v-toolbar-title class="ml-2">Libri Liberi</v-toolbar-title>
+  <v-spacer />
+  <v-toolbar-title class="ml-2">{{getUsername()}}</v-toolbar-title>
   </v-app-bar>
 
-  <v-navigation-drawer clipped permanent app>
+  <v-navigation-drawer clipped permanent app v-if="getUsername()">
     <!-- -->
   </v-navigation-drawer>
 
-  <!-- Sizes your content based upon application components -->
   <v-main>
-
-    <!-- Provides the application the proper gutter -->
     <v-container fluid>
-
-      <!-- If using vue-router -->
       <router-view></router-view>
     </v-container>
   </v-main>
@@ -28,11 +25,18 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import userService from './services/user.service';
 
 export default Vue.extend({
   name: 'App',
 
   data: () => ({
   }),
+
+  methods: {
+    getUsername: function() {
+      return userService.getUser()?.username ?? '';
+    },
+  }
 });
 </script>
