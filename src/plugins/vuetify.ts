@@ -13,9 +13,11 @@ export default new Vuetify({
         themes: {
             light: {
                 primary: colors.teal,
+                secondary: colors.teal.lighten3
             },
             dark: {
                 primary: colors.teal.lighten1,
+                secondary: colors.teal.darken4
             },
         },
     },

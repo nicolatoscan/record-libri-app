@@ -3,7 +3,7 @@
     <v-layout wrap>
       <v-flex sm12 md6 offset-md3>
         <v-card class="elevation-12">
-          <v-toolbar dark color="primary">
+          <v-toolbar dark color="secondary">
             <v-toolbar-title class="flex text-center"><h4>Login</h4></v-toolbar-title>
           </v-toolbar>
           <v-card-text>
@@ -15,7 +15,7 @@
           <v-alert class="ma-4" border="left" color="error" v-if="error" >Nome utente o password non validi</v-alert>
           <v-card-actions class="pa-4">
             <v-spacer></v-spacer>
-            <v-btn color="primary" @click="login()" :disabled="loginDisabled()">Login</v-btn>
+            <v-btn color="primary" @click="login()" @keyup.enter="login()" :disabled="loginDisabled()">Login</v-btn>
             <v-spacer></v-spacer>
           </v-card-actions>
         </v-card>
@@ -50,6 +50,8 @@ export default Vue.extend({
         this.$router.push("/");
       } else {
         this.error = true;
+        this.username = "";
+        this.password = "";
       }
     },
     loginDisabled: function() {

@@ -26,21 +26,9 @@ export default Vue.extend({
 
   mounted: function () {
     this.items = [
-      {
-        title: "Home",
-        icon: "mdi-home",
-        href: "/"
-      },
-      {
-        title: "Login",
-        icon: "mdi-information",
-        href: "/Login"
-      },
-      {
-        title: "Contact",
-        icon: "mdi-email",
-        href: "/contact"
-      }
+      { title: "Home",        href: "/",          icon: "mdi-home" },
+      { title: "Login",       href: "/login",     icon: "mdi-information" },
+      { title: "Biblioteche", href: "/libraries", icon: "mdi-office-building", },
     ];
   },
 
