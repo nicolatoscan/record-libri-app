@@ -1,12 +1,14 @@
 import axios from 'axios';
 import AuthService from './api/auth.service';
 import LibrariesService from './api/libraries.service';
+import UsersService from './api/users.service';
 import userService from './user.service';
 
 class APIService {
 
     public readonly auth = new AuthService(axios, process.env.VUE_APP_API_URL);
     public readonly libraries = new LibrariesService(axios, process.env.VUE_APP_API_URL);
+    public readonly users = new UsersService(axios, process.env.VUE_APP_API_URL);
 
     constructor() {
         const token = userService.getToken();

@@ -22,27 +22,23 @@ class LibrariesService extends APIBaseService {
     }
 
     async add(library: LibraryDTO): Promise<void> {
-        this.axiosHandler(async () => {
-            const res = await this.axios.post(this.baseUrl, library);
-            return res.data;
+        return await this.axiosHandler(async () => {
+            return await this.axios.post(this.baseUrl, library);
         })
     }
 
     async patch(code: string, library: LibraryDTO): Promise<void> {
-        this.axiosHandler(async () => {
-            const res = await this.axios.patch(this.baseUrl + `/${code}`, library);
-            return res.data;
+        return await this.axiosHandler(async () => {
+            return await this.axios.patch(this.baseUrl + `/${code}`, library);
         })
     }
 
     async delete(code: string): Promise<void> {
-        this.axiosHandler(async () => {
-            const res = await this.axios.delete(this.baseUrl + `/${code}`);
-            return res.data;
+        return await this.axiosHandler(async () => {
+            return await this.axios.delete(this.baseUrl + `/${code}`);
         })
     }
 
 }
-
 
 export default LibrariesService;

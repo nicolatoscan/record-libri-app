@@ -29,6 +29,7 @@ export default Vue.extend({
       { title: "Home",        href: "/",          icon: "mdi-home" },
       { title: "Login",       href: "/login",     icon: "mdi-information" },
       { title: "Biblioteche", href: "/libraries", icon: "mdi-office-building", },
+      { title: "Utenti",      href: "/users",     icon: "mdi-account-group", },
     ];
   },
 

@@ -1,10 +1,11 @@
 
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 
 export default class APIBaseService {
-    async axiosHandler<T>(fn: () => T): Promise<T | undefined> {
+    async axiosHandler(fn: () => Promise<AxiosResponse>): Promise<any> {
         try {
-            return await fn();
+            const res = await fn();
+            return res.data;
         } catch (e) {
             if (axios.isAxiosError(e)) {
                 const ae = (e as AxiosError);
