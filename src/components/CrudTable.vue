@@ -16,21 +16,7 @@
 
             <v-card-text>
               <v-container>
-                <slot name="edit-form"></slot>
-                <!-- <v-row>
-                  <v-col cols="12" sm="3" md="3">
-                    <v-text-field
-                      v-model="editedItem.code"
-                      label="Codice"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="9" md="9">
-                    <v-text-field
-                      v-model="editedItem.name"
-                      label="Nome"
-                    ></v-text-field>
-                  </v-col>
-                </v-row> -->
+                <slot name="edit-form" v-bind:editedItem="editedItem"></slot>
               </v-container>
             </v-card-text>
 
@@ -129,7 +115,7 @@ export default Vue.extend({
 
     async deleteItemConfirm () {
       if (this.editedId !== null) {
-        this.$emit('delete', { id: this.editedId, done: () => { this.closeDelete(); }});
+        this.$emit('remove', { id: this.editedId, done: () => { this.closeDelete(); }});
       } else {
         this.closeDelete();
       }
@@ -151,10 +137,10 @@ export default Vue.extend({
       })
     },
 
-    async save () {
+    async save() {
       this.$emit(
-        this.editedId === null ? 'add' : 'edit',
-        { id: this.editedId, element: { ...this.editedItem }, done: () => { this.close(); }}
+        this.editedId === null ? 'add' : 'update',
+        { id: this.editedId, item: { ...this.editedItem }, done: () => { this.close(); }}
       );
     },
   },

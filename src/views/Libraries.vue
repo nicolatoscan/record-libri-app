@@ -1,15 +1,29 @@
 <template>
-  <crud-table :title="'Librerie'" :headers="headers" :items="libraries" :defaultItem="defaultItem">
-    <slot name="edit-form">
+  <crud-table
+      :title="'Librerie'"
+      :headers="headers"
+      :items="libraries"
+      :defaultItem="defaultItem"
+      @add="add($event.item, $event.done)"
+      @update="update($event.id, $event.item, $event.done)"
+      @remove="remove($event.id, $event.done)"
+  >
+    <template v-slot:edit-form="slotProps">
       <v-row>
         <v-col cols="12" sm="3" md="3">
-          <v-text-field label="Codice"></v-text-field>
+          <v-text-field
+            v-model="slotProps.editedItem.code" 
+            label="Codice"
+          ></v-text-field>
         </v-col>
         <v-col cols="12" sm="9" md="9">
-          <v-text-field label="Nome"></v-text-field>
+          <v-text-field
+            v-model="slotProps.editedItem.name" 
+            label="Nome"
+          ></v-text-field>
         </v-col>
       </v-row>
-    </slot>
+    </template>
   </crud-table>
 </template>
 
@@ -48,16 +62,16 @@ export default Vue.extend({
         done();
     },
 
-    async update(id: string, l: LibraryDTO, done: () => void) {
+    async update(id: number, l: LibraryDTO, done: () => void) {
         await apiService.libraries.patch(id, l);
-        const i = this.libraries.findIndex(x => x.code === id)
+        const i = this.libraries.findIndex(x => x.id === id)
         Object.assign(this.libraries[i], l);
         done();
     },
 
-    async delete(id: string, done: () => void) {
+    async remove(id: number, done: () => void) {
         await apiService.libraries.delete(id);
-        const i = this.libraries.findIndex(x => x.code === id)
+        const i = this.libraries.findIndex(x => x.id === id)
         this.libraries.splice(i, 1);
         done();
     },

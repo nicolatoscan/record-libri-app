@@ -27,15 +27,15 @@ class LibrariesService extends APIBaseService {
         })
     }
 
-    async patch(code: string, library: LibraryDTO): Promise<void> {
+    async patch(id: number, library: LibraryDTO): Promise<void> {
         return await this.axiosHandler(async () => {
-            return await this.axios.patch(this.baseUrl + `/${code}`, library);
+            return await this.axios.patch(this.baseUrl + `/${id}`, library);
         })
     }
 
-    async delete(code: string): Promise<void> {
+    async delete(id: number): Promise<void> {
         return await this.axiosHandler(async () => {
-            return await this.axios.delete(this.baseUrl + `/${code}`);
+            return await this.axios.delete(this.baseUrl + `/${id}`);
         })
     }
 
