@@ -26,10 +26,11 @@ export default Vue.extend({
 
   mounted: function () {
     this.items = [
-      { title: "Home",        href: "/",          icon: "mdi-home" },
-      { title: "Login",       href: "/login",     icon: "mdi-information" },
-      { title: "Biblioteche", href: "/libraries", icon: "mdi-office-building", },
-      { title: "Utenti",      href: "/users",     icon: "mdi-account-group", },
+      { title: "Home",        href: "/",              icon: "mdi-home" },
+      { title: "Login",       href: "/login",         icon: "mdi-information" },
+      { title: "Biblioteche", href: "/libraries",     icon: "mdi-office-building", },
+      { title: "Utenti",      href: "/users",         icon: "mdi-account-group", },
+      { title: "Tipi Record", href: "/record-types",  icon: "mdi-rhombus-split", },
     ];
   },
 

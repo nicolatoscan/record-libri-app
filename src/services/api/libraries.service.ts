@@ -21,7 +21,7 @@ class LibrariesService extends APIBaseService {
         }
     }
 
-    async add(library: LibraryDTO): Promise<void> {
+    async add(library: LibraryDTO): Promise<number> {
         return await this.axiosHandler(async () => {
             return await this.axios.post(this.baseUrl, library);
         })

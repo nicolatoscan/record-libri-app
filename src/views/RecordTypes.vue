@@ -1,8 +1,8 @@
 <template>
   <crud-table
-      title="Biblioteche"
+      title="Tipologie Record"
       :headers="headers"
-      :items="libraries"
+      :items="types"
       :defaultItem="defaultItem"
       @add="add($event.item, $event.done)"
       @update="update($event.id, $event.item, $event.done)"
@@ -10,13 +10,7 @@
   >
     <template v-slot:edit-form="slotProps">
       <v-row>
-        <v-col cols="12" sm="3" md="3">
-          <v-text-field
-            label="Codice"
-            v-model="slotProps.editedItem.code" 
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" sm="9" md="9">
+        <v-col cols="12" sm="12" md="12">
           <v-text-field
             label="Nome"
             v-model="slotProps.editedItem.name" 
@@ -28,51 +22,50 @@
 </template>
 
 <script lang="ts">
-import { LibraryDTO } from '@/types/dto';
+import { RecordTypeDTO } from '@/types/dto';
 import Vue from "vue";
 import apiService from '../services/api.service';
 import CrudTable from '../components/CrudTable.vue';
 
 export default Vue.extend({
-  name: "Libraries",
+  name: "RecordTypes",
   components: { CrudTable },
 
   data: () => ({
     headers: [
-      { text: 'Codice', value: 'code', width: '25%' },
+      { text: 'Id', value: 'id', width: '25%' },
       { text: 'Nome', value: 'name', width: '75%' },
       { text: 'Actions', value: 'actions', sortable: false }
     ],
-    libraries: [] as LibraryDTO[],
+    types: [] as RecordTypeDTO[],
     defaultItem: {
-      code: '',
       name: '',
-    } as LibraryDTO,
+    } as RecordTypeDTO,
   }),
 
   async created () {
-    this.libraries = await apiService.libraries.getAll();
+    this.types = await apiService.recordTypes.getAll();
   },
 
   methods: {
 
-    async add(l: LibraryDTO, done: () => void) {
-        l.id = await apiService.libraries.add(l);
-        this.libraries.push(l);
+    async add(t: RecordTypeDTO, done: () => void) {
+        t.id = await apiService.recordTypes.add(t);
+        this.types.push(t);
         done();
     },
 
-    async update(id: number, l: LibraryDTO, done: () => void) {
-        await apiService.libraries.update(id, l);
-        const i = this.libraries.findIndex(x => x.id === id)
-        Object.assign(this.libraries[i], l);
+    async update(id: number, t: RecordTypeDTO, done: () => void) {
+        await apiService.recordTypes.update(id, t);
+        const i = this.types.findIndex(x => x.id === id)
+        Object.assign(this.types[i], t);
         done();
     },
 
     async remove(id: number, done: () => void) {
-        await apiService.libraries.delete(id);
-        const i = this.libraries.findIndex(x => x.id === id)
-        this.libraries.splice(i, 1);
+        await apiService.recordTypes.delete(id);
+        const i = this.types.findIndex(x => x.id === id)
+        this.types.splice(i, 1);
         done();
     },
 
