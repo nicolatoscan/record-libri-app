@@ -34,6 +34,7 @@ import { UserDTO } from '@/types/dto';
 import Vue from "vue";
 import apiService from '../services/api.service';
 import CrudTable from '../components/CrudTable.vue';
+import { SelectOption } from '../common/types';
 
 let rolesDic = {} as { [key: number]: string };
 
@@ -50,7 +51,7 @@ export default Vue.extend({
         { text: 'Actions', value: 'actions', sortable: false }
       ],
       users: [] as UserDTO[],
-      roles: [] as { text: string, value: number }[],
+      roles: [] as SelectOption[],
       defaultItem: {
         id: -1,
         username: '',

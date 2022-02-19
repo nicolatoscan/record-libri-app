@@ -7,7 +7,7 @@
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
-          <template v-slot:activator="{ on, attrs }">
+          <template v-if="addButton" v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Aggiungi</v-btn>
           </template>
           <v-card>
@@ -68,7 +68,14 @@ export default Vue.extend({
     title: String,
     headers: Array,
     items: Array,
-    defaultItem: Object,
+    defaultItem: {
+      type: Object,
+      default: () => ({}),
+    },
+    addButton: {
+      type: Boolean,
+      default: true
+    },
   },
 
   data: () => ({

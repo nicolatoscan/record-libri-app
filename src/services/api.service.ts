@@ -4,13 +4,17 @@ import AuthService from './api/auth.service';
 import LibrariesService from './api/libraries.service';
 import UsersService from './api/users.service';
 import RecordTypesService from './api/rercord-types.service';
+import RecordsService from './api/rercords.service';
 
 class APIService {
 
-    public readonly auth = new AuthService(axios, process.env.VUE_APP_API_URL);
-    public readonly libraries = new LibrariesService(axios, process.env.VUE_APP_API_URL);
-    public readonly users = new UsersService(axios, process.env.VUE_APP_API_URL);
-    public readonly recordTypes = new RecordTypesService(axios, process.env.VUE_APP_API_URL);
+    private readonly apiUrl = process.env.VUE_APP_API_URL;
+
+    public readonly auth         = new AuthService(axios, this.apiUrl);
+    public readonly libraries    = new LibrariesService(axios, this.apiUrl);
+    public readonly users        = new UsersService(axios, this.apiUrl);
+    public readonly recordTypes  = new RecordTypesService(axios, this.apiUrl);
+    public readonly records      = new RecordsService(axios, this.apiUrl);
 
     constructor() {
         const token = userService.getToken();

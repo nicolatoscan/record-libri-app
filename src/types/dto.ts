@@ -16,3 +16,13 @@ export interface RecordTypeDTO {
     id: number;
     name: string;
 }
+
+export interface RecordDTO {
+    id?: number;
+    number: number;
+    libraryId: number;
+    typeId: number;
+    authorName?: string;
+    fly: boolean;
+    recordType: string
+}
