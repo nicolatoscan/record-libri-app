@@ -27,7 +27,7 @@ class LibrariesService extends APIBaseService {
         })
     }
 
-    async patch(id: number, library: LibraryDTO): Promise<void> {
+    async update(id: number, library: LibraryDTO): Promise<void> {
         return await this.axiosHandler(async () => {
             return await this.axios.patch(this.baseUrl + `/${id}`, library);
         })

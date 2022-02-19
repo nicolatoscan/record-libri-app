@@ -1,11 +1,11 @@
 export interface LibraryDTO {
-    id: number;
+    id?: number;
     code: string;
     name: string;
 }
 
 export interface UserDTO {
-    id: number;
+    id?: number;
     username: string;
     password?: string;
     role: number;

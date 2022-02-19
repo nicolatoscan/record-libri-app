@@ -1,6 +1,6 @@
 <template>
   <crud-table
-      :title="'Librerie'"
+      title="Biblioteche"
       :headers="headers"
       :items="libraries"
       :defaultItem="defaultItem"
@@ -12,14 +12,14 @@
       <v-row>
         <v-col cols="12" sm="3" md="3">
           <v-text-field
-            v-model="slotProps.editedItem.code" 
             label="Codice"
+            v-model="slotProps.editedItem.code" 
           ></v-text-field>
         </v-col>
         <v-col cols="12" sm="9" md="9">
           <v-text-field
-            v-model="slotProps.editedItem.name" 
             label="Nome"
+            v-model="slotProps.editedItem.name" 
           ></v-text-field>
         </v-col>
       </v-row>
@@ -63,7 +63,7 @@ export default Vue.extend({
     },
 
     async update(id: number, l: LibraryDTO, done: () => void) {
-        await apiService.libraries.patch(id, l);
+        await apiService.libraries.update(id, l);
         const i = this.libraries.findIndex(x => x.id === id)
         Object.assign(this.libraries[i], l);
         done();

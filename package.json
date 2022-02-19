@@ -8,8 +8,10 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@nestjs/swagger": "^5.2.0",
     "axios": "^0.25.0",
     "core-js": "^3.6.5",
+    "swagger-ui-express": "^4.3.0",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.3",
     "vue-property-decorator": "^9.1.2",

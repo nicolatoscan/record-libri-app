@@ -44,7 +44,7 @@ export default Vue.extend({
     login: async function() {
       this.error = false;
       const user = await apiService.auth.login(this.username, this.password);
-      if (user) {
+      if (user?.token) {
         apiService.setToken(user.token);
         userService.login(user);
         this.$router.push("/");

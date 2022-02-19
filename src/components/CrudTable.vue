@@ -1,8 +1,9 @@
   <template>
   <v-data-table :headers="headers" :items="items" sort-by="calories" class="elevation-1" >
+    <slot name="custom-col"></slot>
     <template v-slot:top>
       <v-toolbar flat color="secondary">
-        <v-toolbar-title>Biblioteche</v-toolbar-title>
+        <v-toolbar-title>{{ title }}</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
@@ -43,6 +44,9 @@
         </v-dialog>
       </v-toolbar>
     </template>
+    <template v-for="column of headers.filter(c => c.itemTextHandler)" v-slot:[getItemSlotName(column.value)]="{ item, value, index }">
+      <span>{{ column.itemTextHandler ? column.itemTextHandler(value) : value }}</span>
+    </template>
     <template v-slot:item.actions="{ item }">
       <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
       <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
@@ -56,7 +60,6 @@
 
 <script lang="ts">
 import Vue from "vue";
-
 
 export default Vue.extend({
   name: "CrudTable",
@@ -95,6 +98,10 @@ export default Vue.extend({
   },
 
   methods: {
+
+    getItemSlotName(name: string): string {
+      return `item.${name}`;
+    },
 
     async initialize () {
       //TODO: 
