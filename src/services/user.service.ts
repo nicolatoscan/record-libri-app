@@ -31,6 +31,11 @@ class UserService {
     public getUser(): UserDTO | null {
         return this.user ?? null;
     }
+    
+    public logout(): void {
+        localStorage.removeItem(this.LOCAL_STORAGE_KEY);
+        this.user = null;
+    }
 }
 
 export default new UserService();
