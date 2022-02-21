@@ -132,7 +132,7 @@ export default Vue.extend({
       allRecordTypes,
       allLibraries
     ] = await Promise.all([
-      apiService.records.getAll(),
+      apiService.records.getMine(),
       apiService.records.getTypes(),
       apiService.recordTypes.getAll(),
       apiService.libraries.getAll(),

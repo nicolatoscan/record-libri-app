@@ -24,6 +24,12 @@ class RecordsService extends APIBaseService {
         })
     }
 
+    async getMine(): Promise<RecordDTO[]> {
+        return await this.axiosHandler(async () => {
+            return await this.axios.get(this.baseUrl + '/mine');
+        })
+    }
+
     async getById(id: number): Promise<RecordDTO> {
         return await this.axiosHandler(async () => {
             return await this.axios.get(this.baseUrl + `/${id}`);

@@ -24,5 +24,7 @@ export interface RecordDTO {
     typeId: number;
     authorName?: string;
     fly: boolean;
-    recordType: string
+    recordType: string;
+    addedById: number;
+    dateAdded: Date;
 }
