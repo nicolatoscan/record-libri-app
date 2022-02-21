@@ -40,6 +40,13 @@
     <Menu />
 
     <template v-slot:append>
+      <div class="pa-2" v-if="!mini">
+        <v-btn block @click="changeTheme()">
+          <v-icon class="ml-1">
+            {{ darkTheme ? 'mdi-weather-sunny' : 'mdi-weather-night' }}
+          </v-icon>
+        </v-btn>
+      </div>
       <div class="pa-2">
         <v-btn block @click="logout()">
           <span v-if="!mini">Logout</span>
@@ -61,8 +68,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import userService from './services/user.service';
-import Menu from './components/Menu.vue';
+import userService from '@/services/user.service';
+import Menu from '@/components/Menu.vue';
+import config from '@/common/config';
 
 export default Vue.extend({
   name: 'App',
@@ -70,9 +78,21 @@ export default Vue.extend({
 
   data: () => ({
     mini: false,
+    darkTheme: false
   }),
-
+  created: function() {
+    const theme = localStorage.getItem(config.LOCAL_STORAGE_KEY_THEME);
+    if (theme && theme === 'dark') {
+      this.darkTheme = true;
+      this.$vuetify.theme.dark = this.darkTheme
+    }
+  },
   methods: {
+    changeTheme: function() {
+      this.darkTheme = !this.darkTheme;
+      this.$vuetify.theme.dark = this.darkTheme
+      localStorage.setItem(config.LOCAL_STORAGE_KEY_THEME, this.darkTheme ? 'light' : 'dark');
+    },
     isLoggedIn: function() {
       return userService.isLoggedIn();
     },

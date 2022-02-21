@@ -1,8 +1,9 @@
 import { UserDTO } from '@/types/dto';
+import config from '@/common/config';
 
 class UserService {
 
-    public readonly LOCAL_STORAGE_KEY = 'user';
+    public readonly LOCAL_STORAGE_KEY = config.LOCAL_STORAGE_KEY_USER;
     private user: UserDTO | null  = null;
 
     constructor() {
