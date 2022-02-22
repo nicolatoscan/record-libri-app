@@ -101,7 +101,6 @@ export default Vue.extend({
     },
     logout: function() {
       userService.logout();
-      this.$router.push('/login');
     },
   }
 });

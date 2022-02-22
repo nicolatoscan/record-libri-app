@@ -16,27 +16,33 @@
 
 <script lang="ts">
 import Vue from "vue";
+import userService from '@/services/user.service';
+import { Role } from '@/common/enums'
 
 interface MenuItem {
   title: string;
   icon: string;
+  role: number;
   href: string;
 }
+
+const menuItems: MenuItem[] = [
+    { title: "Biblioteche",     href: "/libraries",     role: Role.Admin,  icon: "mdi-office-building", },
+    { title: "Utenti",          href: "/users",         role: Role.Admin,  icon: "mdi-account-group", },
+    { title: "Tipi Record",     href: "/record-types",  role: Role.Admin,  icon: "mdi-rhombus-split", },
+    { title: "Aggiungi Record", href: "/add-records",   role: Role.User,   icon: "mdi-plus-box", },
+  ]
 
 export default Vue.extend({
   name: "HelloWorld",
 
-  mounted: function () {
-    this.items = [
-      { title: "Biblioteche",     href: "/libraries",     icon: "mdi-office-building", },
-      { title: "Utenti",          href: "/users",         icon: "mdi-account-group", },
-      { title: "Tipi Record",     href: "/record-types",  icon: "mdi-rhombus-split", },
-      { title: "Aggiungi Record", href: "/add-records",   icon: "mdi-plus-box", },
-    ];
-  },
+  computed: {
+    items: function () {
+      const user = userService.getUser();
+      if (!user) return [];
 
-  data: () => ({
-    items: [] as MenuItem[]
-  }),
+      return menuItems.filter(i => i.role <= user.role);
+    }
+  },
 });
 </script>

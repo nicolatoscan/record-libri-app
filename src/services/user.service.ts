@@ -36,6 +36,7 @@ class UserService {
     public logout(): void {
         localStorage.removeItem(this.LOCAL_STORAGE_KEY);
         this.user = null;
+        window.location.href = './login';
     }
 }
 
