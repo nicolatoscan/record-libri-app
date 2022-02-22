@@ -9,19 +9,20 @@
       @remove="remove($event.id, $event.done)"
   >
     <template v-slot:edit-form="slotProps">
-      {{slotProps.editedItem}}
       <v-row>
-        <v-col cols="12" sm="9" md="9">
+        <v-col cols="12" sm="8" md="8">
           <v-text-field
             label="Username"
-            v-model="slotProps.editedItem.username" 
+            v-model="slotProps.editedItem.username"
+            :rules="usernameRules" :counter="120"
           ></v-text-field>
         </v-col>
-        <v-col cols="12" sm="3" md="3">
+        <v-col cols="12" sm="4" md="4">
           <v-select
             label="Ruolo"
             :items="roles"
             v-model="slotProps.editedItem.role"
+            :rules="roleRules"
           ></v-select>
         </v-col>
       </v-row>
@@ -35,6 +36,7 @@ import Vue from "vue";
 import apiService from '@/services/api.service';
 import CrudTable from '@/components/CrudTable.vue';
 import { SelectOption } from '@/common/types';
+import rules from '@/common/form-rules';
 
 let rolesDic = {} as { [key: number]: string };
 
@@ -57,6 +59,8 @@ export default Vue.extend({
         username: '',
         role: 0,
       } as UserDTO,
+      usernameRules: [ rules.length(120) ],
+      roleRules: [ rules.notEmpty() ],
     }
   },
 

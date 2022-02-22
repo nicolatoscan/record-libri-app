@@ -85,7 +85,7 @@ export default Vue.extend({
     dialogDelete: false,
     editedId: null as number | null,
     editedItem: {},
-    isFormValid: true,
+    isFormValid: false,
   }),
 
   computed: {

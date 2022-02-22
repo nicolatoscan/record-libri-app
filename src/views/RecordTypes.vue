@@ -13,7 +13,8 @@
         <v-col cols="12" sm="12" md="12">
           <v-text-field
             label="Nome"
-            v-model="slotProps.editedItem.name" 
+            v-model="slotProps.editedItem.name"
+            :rules="nameRules" :counter="50"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -26,6 +27,7 @@ import { RecordTypeDTO } from '@/types/dto';
 import Vue from "vue";
 import apiService from '@/services/api.service';
 import CrudTable from '@/components/CrudTable.vue';
+import rules from '@/common/form-rules';
 
 export default Vue.extend({
   name: "RecordTypes",
@@ -41,6 +43,7 @@ export default Vue.extend({
     defaultItem: {
       name: '',
     } as RecordTypeDTO,
+    nameRules: [ rules.length(50) ],
   }),
 
   async created () {

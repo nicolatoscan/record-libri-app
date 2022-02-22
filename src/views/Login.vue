@@ -7,15 +7,32 @@
             <v-toolbar-title class="flex text-center"><h4>Login</h4></v-toolbar-title>
           </v-toolbar>
           <v-card-text>
-            <v-form>
-              <v-text-field v-model="username" prepend-icon="mdi-account" name="username" label="Nome" type="text" required></v-text-field>
-              <v-text-field v-model="password" id="password" prepend-icon="mdi-lock" name="password" label="Password" type="password" required></v-text-field>
+            <v-form v-model="isFormValid">
+              <v-text-field
+                v-model="username"
+                prepend-icon="mdi-account"
+                name="username"
+                label="Nome"
+                type="text"
+                required
+                :rules="usernameRules"
+              ></v-text-field>
+              <v-text-field
+                v-model="password"
+                id="password"
+                prepend-icon="mdi-lock"
+                name="password"
+                label="Password"
+                type="password" 
+                required
+                :rules="passwordRules"
+              ></v-text-field>
             </v-form>
           </v-card-text>
           <v-alert class="ma-4" border="left" color="error" v-if="error" >Nome utente o password non validi</v-alert>
           <v-card-actions class="pa-4">
             <v-spacer></v-spacer>
-            <v-btn color="primary" @click="login()" @keyup.enter="login()" :disabled="loginDisabled()">Login</v-btn>
+            <v-btn color="primary" :disabled="!isFormValid" @click="login()" @keyup.enter="login()">Login</v-btn>
             <v-spacer></v-spacer>
           </v-card-actions>
         </v-card>
@@ -28,6 +45,7 @@
 import Vue from "vue";
 import userService from '@/services/user.service';
 import apiService from '@/services/api.service';
+import rules from  '@/common/form-rules'
 
 export default Vue.extend({
   name: "Login",
@@ -37,6 +55,9 @@ export default Vue.extend({
       username: "",
       password: "",
       error: false,
+      isFormValid: false,
+      usernameRules: [ rules.length(250, 1) ],
+      passwordRules: [ rules.length(250, 4, 'La password è di almeno 4 caratteri') ],
     };
   },
 
@@ -53,9 +74,6 @@ export default Vue.extend({
         this.username = "";
         this.password = "";
       }
-    },
-    loginDisabled: function() {
-      return !this.username || !this.password;
     }
   }
 });
