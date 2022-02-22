@@ -1,4 +1,5 @@
-  <template>
+<template>
+<div>
   <v-data-table :headers="headers" :items="items" sort-by="calories" class="elevation-1" >
     <slot name="custom-col"></slot>
     <template v-slot:top>
@@ -32,14 +33,14 @@
         </v-dialog>
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
-            <v-toolbar dark color="secondary">
-              <v-toolbar-title class="flex text-center text-h5">Sei sicuro di voler eliminare questo elemento?</v-toolbar-title
-              >
+            <v-toolbar dark color="red">
+              <v-toolbar-title class="flex text-center text-h5">Conferma eliminazione</v-toolbar-title>
             </v-toolbar>
             <v-card-actions>
+              <v-card-text>Sei sicuro di voler eliminare questo elemento?</v-card-text>
               <v-spacer></v-spacer>
               <v-btn color="primary" text @click="closeDelete">Annulla</v-btn>
-              <v-btn color="primary" @click="deleteItemConfirm">OK</v-btn>
+              <v-btn color="red" @click="deleteItemConfirm">OK</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
@@ -57,6 +58,15 @@
       <v-btn color="primary" @click="initialize">Reset</v-btn>
     </template>
   </v-data-table>
+  <v-snackbar v-model="snackbarDelete" :timeout="2000" color="red">
+    Elemento eliminato
+    <template v-slot:action="{ attrs }"><v-btn color="red" text v-bind="attrs" @click="snackbarDelete = false" >Chiudi</v-btn></template>
+  </v-snackbar>
+  <v-snackbar v-model="snackbarSave" :timeout="2000">
+    Elemento salvato
+    <template v-slot:action="{ attrs }"><v-btn color="primary" text v-bind="attrs" @click="snackbarSave = false" >Chiudi</v-btn></template>
+  </v-snackbar>
+</div>
 </template>
 
 
@@ -86,6 +96,8 @@ export default Vue.extend({
     editedId: null as number | null,
     editedItem: {},
     isFormValid: false,
+    snackbarDelete: false,
+    snackbarSave: false,
   }),
 
   computed: {
@@ -132,7 +144,10 @@ export default Vue.extend({
 
     async deleteItemConfirm () {
       if (this.editedId !== null) {
-        this.$emit('remove', { id: this.editedId, done: () => { this.closeDelete(); }});
+        this.$emit('remove', { id: this.editedId, done: () => {
+          this.snackbarDelete = true;
+          this.closeDelete();
+        }});
       } else {
         this.closeDelete();
       }
@@ -159,7 +174,10 @@ export default Vue.extend({
 
       this.$emit(
         this.editedId === null ? 'add' : 'update',
-        { id: this.editedId, item: { ...this.editedItem }, done: () => { this.close(); }}
+        { id: this.editedId, item: { ...this.editedItem }, done: () => {
+          this.snackbarSave = true;
+          this.close();
+        }}
       );
     },
   },
