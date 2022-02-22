@@ -26,8 +26,8 @@
 
 <script lang="ts">
 import Vue from "vue";
-import userService from '../services/user.service';
-import apiService from '../services/api.service';
+import userService from '@/services/user.service';
+import apiService from '@/services/api.service';
 
 export default Vue.extend({
   name: "Login",

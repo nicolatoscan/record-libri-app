@@ -34,8 +34,8 @@
 <script lang="ts">
 import { LibraryDTO } from '@/types/dto';
 import Vue from "vue";
-import apiService from '../services/api.service';
-import CrudTable from '../components/CrudTable.vue';
+import apiService from '@/services/api.service';
+import CrudTable from '@/components/CrudTable.vue';
 import rules from  '@/common/form-rules'
 
 export default Vue.extend({

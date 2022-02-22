@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import userService from '../services/user.service';
+import userService from '@/services/user.service';
 import Vue from 'vue'
 
 export default Vue.extend({

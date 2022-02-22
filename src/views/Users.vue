@@ -32,9 +32,9 @@
 <script lang="ts">
 import { UserDTO } from '@/types/dto';
 import Vue from "vue";
-import apiService from '../services/api.service';
-import CrudTable from '../components/CrudTable.vue';
-import { SelectOption } from '../common/types';
+import apiService from '@/services/api.service';
+import CrudTable from '@/components/CrudTable.vue';
+import { SelectOption } from '@/common/types';
 
 let rolesDic = {} as { [key: number]: string };
 

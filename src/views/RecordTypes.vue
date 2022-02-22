@@ -24,8 +24,8 @@
 <script lang="ts">
 import { RecordTypeDTO } from '@/types/dto';
 import Vue from "vue";
-import apiService from '../services/api.service';
-import CrudTable from '../components/CrudTable.vue';
+import apiService from '@/services/api.service';
+import CrudTable from '@/components/CrudTable.vue';
 
 export default Vue.extend({
   name: "RecordTypes",
