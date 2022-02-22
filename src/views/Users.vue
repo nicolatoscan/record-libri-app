@@ -9,12 +9,13 @@
       @remove="remove($event.id, $event.done)"
   >
     <template v-slot:edit-form="slotProps">
+
       <v-row>
         <v-col cols="12" sm="8" md="8">
           <v-text-field
             label="Username"
             v-model="slotProps.editedItem.username"
-            :rules="usernameRules" :counter="120"
+            :rules="usernameRules" :counter="120" required
           ></v-text-field>
         </v-col>
         <v-col cols="12" sm="4" md="4">
@@ -22,10 +23,37 @@
             label="Ruolo"
             :items="roles"
             v-model="slotProps.editedItem.role"
-            :rules="roleRules"
+            :rules="roleRules" required
           ></v-select>
         </v-col>
       </v-row>
+
+      <v-row v-if="slotProps.editedId !== null">
+        <v-col>
+          <v-checkbox
+            v-model="updatePassword"
+            label="Aggiorna la password"
+            color="primary">
+          </v-checkbox>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="slotProps.editedId === null || updatePassword">
+        <v-col cols="12" sm="6" md="6">
+          <v-text-field
+            label="Password"
+            v-model="slotProps.editedItem.password"
+            :rules="passwordRules"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" sm="6" md="6">
+          <v-text-field
+            label="Conferma Password"
+            :rules="[ v => (v && v === slotProps.editedItem.password) || 'Le password non coincidono' ]"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+
     </template>
   </crud-table>
 </template>
@@ -59,8 +87,10 @@ export default Vue.extend({
         username: '',
         role: 0,
       } as UserDTO,
+      updatePassword: false,
       usernameRules: [ rules.length(120) ],
       roleRules: [ rules.notEmpty() ],
+      passwordRules: [ rules.length(120, 8, 'La password deve essere di almeno 8 caratteri') ],
     }
   },
 
@@ -84,15 +114,17 @@ export default Vue.extend({
 
 
     async add(u: UserDTO, done: () => void) {
-        await apiService.users.add(u);
+        u.id = await apiService.users.add(u);
         this.users.push(u);
         done();
     },
 
     async update(id: number, u: UserDTO, done: () => void) {
+        
         await apiService.users.update(id, {
           username: u.username,
           role: u.role,
+          ...(this.updatePassword ? { password: u.password } : {})
         });
         const i = this.users.findIndex(x => x.id === id);
         Object.assign(this.users[i], u);

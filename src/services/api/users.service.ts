@@ -39,7 +39,7 @@ class UsersService extends APIBaseService {
         })
     }
 
-    async add(user: UserDTO): Promise<void> {
+    async add(user: UserDTO): Promise<number> {
         return await this.axiosHandler(async () => {
             return await this.axios.post(this.baseUrl, user);
         })

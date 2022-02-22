@@ -34,7 +34,7 @@ const menuItems: MenuItem[] = [
   ]
 
 export default Vue.extend({
-  name: "HelloWorld",
+  name: "Menu",
 
   computed: {
     items: function () {

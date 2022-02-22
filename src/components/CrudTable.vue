@@ -18,7 +18,7 @@
             <v-card-text>
               <v-container>
                 <v-form v-model="isFormValid">
-                  <slot name="edit-form" v-bind:editedItem="editedItem"></slot>
+                  <slot name="edit-form" v-bind="{ editedItem, editedId }"></slot>
                 </v-form>
               </v-container>
             </v-card-text>
