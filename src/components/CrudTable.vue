@@ -17,14 +17,16 @@
 
             <v-card-text>
               <v-container>
-                <slot name="edit-form" v-bind:editedItem="editedItem"></slot>
+                <v-form v-model="isFormValid">
+                  <slot name="edit-form" v-bind:editedItem="editedItem"></slot>
+                </v-form>
               </v-container>
             </v-card-text>
 
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="primary" text @click="close">Annulla</v-btn>
-              <v-btn color="primary" @click="save">Salva</v-btn>
+              <v-btn color="primary" :disabled="!isFormValid" @click="save">Salva</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -82,7 +84,8 @@ export default Vue.extend({
     dialog: false,
     dialogDelete: false,
     editedId: null as number | null,
-    editedItem: {}
+    editedItem: {},
+    isFormValid: true,
   }),
 
   computed: {
@@ -152,6 +155,8 @@ export default Vue.extend({
     },
 
     async save() {
+      if (!this.isFormValid) return;
+
       this.$emit(
         this.editedId === null ? 'add' : 'update',
         { id: this.editedId, item: { ...this.editedItem }, done: () => { this.close(); }}

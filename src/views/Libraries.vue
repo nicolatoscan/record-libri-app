@@ -13,13 +13,17 @@
         <v-col cols="12" sm="3" md="3">
           <v-text-field
             label="Codice"
-            v-model="slotProps.editedItem.code" 
+            v-model="slotProps.editedItem.code"
+            :rules="codeRules"
+            :counter="50"
           ></v-text-field>
         </v-col>
         <v-col cols="12" sm="9" md="9">
           <v-text-field
             label="Nome"
             v-model="slotProps.editedItem.name" 
+            :rules="nameRules"
+            :counter="100"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -32,6 +36,7 @@ import { LibraryDTO } from '@/types/dto';
 import Vue from "vue";
 import apiService from '../services/api.service';
 import CrudTable from '../components/CrudTable.vue';
+import rules from  '@/common/form-rules'
 
 export default Vue.extend({
   name: "Libraries",
@@ -48,6 +53,8 @@ export default Vue.extend({
       code: '',
       name: '',
     } as LibraryDTO,
+    codeRules: [ rules.notEmpty(), rules.length(50) ],
+    nameRules: [ rules.notEmpty(), rules.length(100) ],
   }),
 
   async created () {
