@@ -32,3 +32,16 @@ export interface RecordDTO {
     addedById: number;
     dateAdded: Date;
 }
+
+export interface NonCompliancesDTO {
+    id?: number;
+    recordId: number;
+    userId: number;
+    language: string;
+    libraryId: number;
+    recordTypeId: number;
+    tagId: number;
+    description: string;
+    group: string;
+    dateAdded?: Date;
+}

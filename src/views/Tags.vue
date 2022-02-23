@@ -2,7 +2,7 @@
   <crud-table
       title="Tags"
       :headers="headers"
-      :items="types"
+      :items="tags"
       :defaultItem="defaultItem"
       @add="add($event.item, $event.done)"
       @update="update($event.id, $event.item, $event.done)"
@@ -39,7 +39,7 @@ export default Vue.extend({
       { text: 'Nome', value: 'name', width: '75%' },
       { text: 'Actions', value: 'actions', sortable: false }
     ],
-    types: [] as TagDTO[],
+    tags: [] as TagDTO[],
     defaultItem: {
       name: '',
     } as TagDTO,
@@ -47,28 +47,28 @@ export default Vue.extend({
   }),
 
   async created () {
-    this.types = await apiService.tags.getAll();
+    this.tags = await apiService.tags.getAll();
   },
 
   methods: {
 
     async add(t: TagDTO, done: () => void) {
         t.id = await apiService.tags.add(t);
-        this.types.push(t);
+        this.tags.push(t);
         done();
     },
 
     async update(id: number, t: TagDTO, done: () => void) {
         await apiService.tags.update(id, t);
-        const i = this.types.findIndex(x => x.id === id)
-        Object.assign(this.types[i], t);
+        const i = this.tags.findIndex(x => x.id === id)
+        Object.assign(this.tags[i], t);
         done();
     },
 
     async remove(id: number, done: () => void) {
         await apiService.tags.delete(id);
-        const i = this.types.findIndex(x => x.id === id)
-        this.types.splice(i, 1);
+        const i = this.tags.findIndex(x => x.id === id)
+        this.tags.splice(i, 1);
         done();
     },
 

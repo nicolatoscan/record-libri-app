@@ -124,22 +124,17 @@ export default Vue.extend({
   }),
 
   async created () {
-    let allLibraries: LibraryDTO[] = [];
-    let allRecordTypes: RecordTypeDTO[] = [];
     [ 
       this.records,
       this.types,
-      allRecordTypes,
-      allLibraries
+      this.recordTypes,
+      this.libraries,
     ] = await Promise.all([
       apiService.records.getMine(),
       apiService.records.getTypes(),
-      apiService.recordTypes.getAll(),
-      apiService.libraries.getAll(),
+      apiService.recordTypes.getAll().then(rs => rs.map(t => ({ value: t.id ?? -1, text: t.name }))),
+      apiService.libraries.getAll().then(ls => ls.map(l => ({ value: l.id ?? -1, text: l.name }))),
     ])
-
-    this.libraries = allLibraries.map(l => ({ value: l.id ?? -1, text: l.name }));
-    this.recordTypes = allRecordTypes.map(t => ({ value: t.id ?? -1, text: t.name }));
   },
 
   methods: {
