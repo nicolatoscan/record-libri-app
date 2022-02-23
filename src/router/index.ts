@@ -13,6 +13,7 @@ const routes: Array<RouteConfig> = [
   { path: '/users',         name: 'Users',             component: () => import(/* webpackChunkName: "users" */ '../views/Users.vue') },
   { path: '/record-types',  name: 'RecordTypes',       component: () => import(/* webpackChunkName: "record-types" */ '../views/RecordTypes.vue') },
   { path: '/add-records',   name: 'Aggiungi Records',  component: () => import(/* webpackChunkName: "add-records" */ '../views/AddRecords.vue') },
+  { path: '/tags',          name: 'Tag',               component: () => import(/* webpackChunkName: "tags" */ '../views/Tags.vue') },
 ]
 
 const router = new VueRouter({

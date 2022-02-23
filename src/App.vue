@@ -3,10 +3,10 @@
 
   <!--
     <v-app-bar clipped-left app color="primary">
-  <v-toolbar-title class="ml-2">Libri Liberi</v-toolbar-title>
-  <v-spacer />
-  <v-toolbar-title class="ma-2">{{getUsername()}}</v-toolbar-title>
-  <v-btn icon class="ma-2"><v-icon>mdi-exit-to-app</v-icon></v-btn>
+    <v-toolbar-title class="ml-2">Libri Liberi</v-toolbar-title>
+    <v-spacer />
+    <v-toolbar-title class="ma-2">{{getUsername()}}</v-toolbar-title>
+    <v-btn icon class="ma-2"><v-icon>mdi-exit-to-app</v-icon></v-btn>
   </v-app-bar>
   -->
 
@@ -82,16 +82,14 @@ export default Vue.extend({
   }),
   created: function() {
     const theme = localStorage.getItem(config.LOCAL_STORAGE_KEY_THEME);
-    if (theme && theme === 'dark') {
-      this.darkTheme = true;
-      this.$vuetify.theme.dark = this.darkTheme
-    }
+    this.darkTheme = (!!theme && theme === 'dark');
+    this.$vuetify.theme.dark = this.darkTheme
   },
   methods: {
     changeTheme: function() {
       this.darkTheme = !this.darkTheme;
       this.$vuetify.theme.dark = this.darkTheme
-      localStorage.setItem(config.LOCAL_STORAGE_KEY_THEME, this.darkTheme ? 'light' : 'dark');
+      localStorage.setItem(config.LOCAL_STORAGE_KEY_THEME, this.darkTheme ? 'dark' : 'light');
     },
     isLoggedIn: function() {
       return userService.isLoggedIn();

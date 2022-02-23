@@ -31,6 +31,7 @@ const menuItems: MenuItem[] = [
     { title: "Utenti",          href: "/users",         role: Role.Admin,  icon: "mdi-account-group", },
     { title: "Tipi Record",     href: "/record-types",  role: Role.Admin,  icon: "mdi-rhombus-split", },
     { title: "Aggiungi Record", href: "/add-records",   role: Role.User,   icon: "mdi-plus-box", },
+    { title: "Tag",             href: "/tags",          role: Role.User,   icon: "mdi-tag", },
   ]
 
 export default Vue.extend({

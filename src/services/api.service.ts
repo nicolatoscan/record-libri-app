@@ -5,6 +5,7 @@ import LibrariesService from './api/libraries.service';
 import UsersService from './api/users.service';
 import RecordTypesService from './api/rercord-types.service';
 import RecordsService from './api/rercords.service';
+import TagsService from './api/tags.service';
 
 class APIService {
 
@@ -15,6 +16,7 @@ class APIService {
     public readonly users        = new UsersService(axios, this.apiUrl);
     public readonly recordTypes  = new RecordTypesService(axios, this.apiUrl);
     public readonly records      = new RecordsService(axios, this.apiUrl);
+    public readonly tags         = new TagsService(axios, this.apiUrl);
 
     constructor() {
         const token = userService.getToken();
