@@ -10,7 +10,7 @@
           <v-col cols="2" sm="3" md="2">
             <v-checkbox
               label="Authority"
-              v-model="isAuthority"
+              v-model="addingItem.isAuthority"
             ></v-checkbox>
           </v-col>
           <v-col cols="5" sm="9" md="5">
@@ -47,6 +47,15 @@
               :items="formats"
               v-model="addingItem.formatId"
             ></v-select>
+          </v-col>
+        </v-row>
+
+        <v-row class="mx-12">
+          <v-col cols="6">
+            <v-checkbox
+              label="UNI Inglese"
+              v-model="addingItem.englishUNI"
+            ></v-checkbox>
           </v-col>
         </v-row>
 
@@ -113,7 +122,6 @@ export default Vue.extend({
     founds: [] as string[],
     formats: [] as SelectOption[],
     libraries: [] as SelectOption[],
-    isAuthority: false,
     addingItem: {
       libraryId: 0,
       formatId: 0,
