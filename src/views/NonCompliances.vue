@@ -177,15 +177,24 @@ export default Vue.extend({
 
   methods: {
 
+    fillMissingProps(nc: NonCompliancesDTO) {
+      nc.recordNumber = +(this.records.find(r => r.value === nc.recordId)?.text ?? '');
+      nc.libraryName = this.libraries.find(l => l.value === nc.libraryId)?.text ?? '';
+      nc.recordTypeName = this.recordTypes.find(r => r.value === nc.recordTypeId)?.text ?? '';
+      nc.tagName = this.tags.find(t => t.value === nc.tagId)?.text ?? '';
+    },
+
     async add(nc: NonCompliancesDTO, done: () => void) {
       console.log(nc);
       nc.id = await apiService.nonCompliances.add(nc);
+      this.fillMissingProps(nc);
       this.ncs.push(nc);
       done();
     },
 
     async update(id: number, nc: NonCompliancesDTO, done: () => void) {
       await apiService.nonCompliances.update(id, nc);
+      this.fillMissingProps(nc);
       const i = this.ncs.findIndex(x => x.id === id)
       Object.assign(this.ncs[i], nc);
       done();

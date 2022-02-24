@@ -46,8 +46,9 @@ export default Vue.extend({
   data: () => ({
     loading: true,
     headers: [
-      { text: 'Codice', value: 'code', width: '25%' },
-      { text: 'Nome', value: 'name', width: '75%' },
+      { text: 'Id', value: 'id', width: '10%' },
+      { text: 'Codice', value: 'code', width: '20%' },
+      { text: 'Nome', value: 'name', width: '70%' },
       { text: 'Actions', value: 'actions', sortable: false }
     ],
     libraries: [] as LibraryDTO[],
