@@ -68,22 +68,18 @@ export default Vue.extend({
   methods: {
 
     async add(l: LibraryDTO, done: () => void) {
-        l.id = await apiService.libraries.add(l);
-        this.libraries.push(l);
-        done();
+      const res = await apiService.libraries.add(l);
+      l.id = (res as any).code;
+      done();
     },
 
     async update(id: number, l: LibraryDTO, done: () => void) {
         await apiService.libraries.update(id, l);
-        const i = this.libraries.findIndex(x => x.id === id)
-        Object.assign(this.libraries[i], l);
         done();
     },
 
     async remove(id: number, done: () => void) {
         await apiService.libraries.delete(id);
-        const i = this.libraries.findIndex(x => x.id === id)
-        this.libraries.splice(i, 1);
         done();
     },
 

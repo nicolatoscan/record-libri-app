@@ -57,21 +57,16 @@ export default Vue.extend({
 
     async add(t: FormatDTO, done: () => void) {
         t.id = await apiService.formats.add(t);
-        this.types.push(t);
         done();
     },
 
     async update(id: number, t: FormatDTO, done: () => void) {
         await apiService.formats.update(id, t);
-        const i = this.types.findIndex(x => x.id === id)
-        Object.assign(this.types[i], t);
         done();
     },
 
     async remove(id: number, done: () => void) {
         await apiService.formats.delete(id);
-        const i = this.types.findIndex(x => x.id === id)
-        this.types.splice(i, 1);
         done();
     },
 

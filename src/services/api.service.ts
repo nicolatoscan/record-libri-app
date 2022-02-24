@@ -34,6 +34,15 @@ class APIService {
             }
             return config;
         });
+
+        axios.interceptors.response.use(
+            r => r,
+            (error) => {
+                if (error.response.status === 401) {
+                    userService.logout();
+                }
+            }
+        )
     }
 
 }

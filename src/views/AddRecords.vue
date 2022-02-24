@@ -119,15 +119,11 @@ export default Vue.extend({
     async update(id: number, r: RecordDTO, done: () => void) {
       await apiService.records.update(id, r);
       this.fillMissingProps(r);
-      const i = this.records.findIndex(x => x.id === id)
-      Object.assign(this.records[i], r);
       done();
     },
 
     async remove(id: number, done: () => void) {
       await apiService.nonCompliances.delete(id);
-      const i = this.records.findIndex(x => x.id === id)
-      this.records.splice(i, 1);
       done();
     },
 

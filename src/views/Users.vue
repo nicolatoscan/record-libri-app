@@ -123,26 +123,20 @@ export default Vue.extend({
 
     async add(u: UserDTO, done: () => void) {
         u.id = await apiService.users.add(u);
-        this.users.push(u);
         done();
     },
 
     async update(id: number, u: UserDTO, done: () => void) {
-        
         await apiService.users.update(id, {
           username: u.username,
           role: u.role,
           ...(this.updatePassword ? { password: u.password } : {})
         });
-        const i = this.users.findIndex(x => x.id === id);
-        Object.assign(this.users[i], u);
         done();
     },
 
     async remove(id: number, done: () => void) {
         await apiService.libraries.delete(id);
-        const i = this.users.findIndex(x => x.id === id)
-        this.users.splice(i, 1);
         done();
     },
 

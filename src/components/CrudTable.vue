@@ -7,11 +7,12 @@
         <v-toolbar-title>{{ title }}</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="900px">
+        <v-dialog v-model="dialog" max-width="900px" >
           <template v-if="addButton" v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Aggiungi</v-btn>
+            <v-btn color="primary darken-2" dark class="mb-2" v-bind="attrs" v-on="on">Aggiungi</v-btn>
           </template>
           <v-card>
+            <v-progress-linear :active="savingLoading" indeterminate absolute bottom></v-progress-linear>
             <v-toolbar dark color="primary">
               <v-toolbar-title class="flex text-center text-h5">{{formTitle}}</v-toolbar-title>
             </v-toolbar>
@@ -106,6 +107,7 @@ export default Vue.extend({
     snackbarDelete: false,
     snackbarSave: false,
     readonly: false,
+    savingLoading: false,
   }),
 
   computed: {
@@ -131,6 +133,10 @@ export default Vue.extend({
   },
 
   methods: {
+
+    findIndex(id: number): number {
+      return this.items.findIndex((i: any) => i.id === id);
+    },
 
     rowClick(row: any): void {
       this.editedItem = { ...row };
@@ -160,8 +166,12 @@ export default Vue.extend({
     },
 
     async deleteItemConfirm () {
+      this.savingLoading = false
       if (this.editedId !== null) {
         this.$emit('remove', { id: this.editedId, done: () => {
+          if (this.editedId !== null) {
+            this.items.splice(this.findIndex(this.editedId), 1);
+          }
           this.snackbarDelete = true;
           this.closeDelete();
         }});
@@ -170,32 +180,47 @@ export default Vue.extend({
       }
     },
 
-    close () {
+    close() {
       this.dialog = false;
       this.$nextTick(() => {
         this.editedItem = { ...this.defaultItem };
         this.editedId = null;
         this.readonly = false;
+        this.savingLoading = false;
       })
     },
 
-    closeDelete () {
+    closeDelete() {
       this.dialogDelete = false
       this.$nextTick(() => {
         this.editedItem = { ...this.defaultItem };
         this.editedId = null;
+        this.savingLoading = false;
       })
     },
 
     async save() {
       if (!this.isFormValid) return;
 
+      this.savingLoading = true;
       this.$emit(
         this.editedId === null ? 'add' : 'update',
-        { id: this.editedId, item: { ...this.editedItem }, done: () => {
-          this.snackbarSave = true;
-          this.close();
-        }}
+        {
+          id: this.editedId,
+          item: this.editedItem,
+          done: () => {
+            if (this.editedId === null) {
+              this.items.push(this.editedItem);
+            } else {
+              Object.assign(
+                this.items[this.findIndex(this.editedId)],
+                this.editedItem
+              );
+            }
+            this.snackbarSave = true;
+            this.close();
+          }
+        }
       );
     },
   },

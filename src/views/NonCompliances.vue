@@ -185,25 +185,19 @@ export default Vue.extend({
     },
 
     async add(nc: NonCompliancesDTO, done: () => void) {
-      console.log(nc);
       nc.id = await apiService.nonCompliances.add(nc);
       this.fillMissingProps(nc);
-      this.ncs.push(nc);
       done();
     },
 
     async update(id: number, nc: NonCompliancesDTO, done: () => void) {
       await apiService.nonCompliances.update(id, nc);
       this.fillMissingProps(nc);
-      const i = this.ncs.findIndex(x => x.id === id)
-      Object.assign(this.ncs[i], nc);
       done();
     },
 
     async remove(id: number, done: () => void) {
       await apiService.nonCompliances.delete(id);
-      const i = this.ncs.findIndex(x => x.id === id)
-      this.ncs.splice(i, 1);
       done();
     },
 

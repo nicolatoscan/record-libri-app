@@ -63,6 +63,7 @@
   </v-main>
 
   <!-- <v-footer app></v-footer> -->
+  <!-- <alert :dialog="dialog" :message="'DIOCAN'" @close="dialog = false" ></alert> -->
 </v-app>
 </template>
 
@@ -70,6 +71,7 @@
 import Vue from 'vue';
 import userService from '@/services/user.service';
 import Menu from '@/components/Menu.vue';
+import Alert from '@/components/Alert.vue';
 import config from '@/common/config';
 
 export default Vue.extend({
@@ -78,7 +80,8 @@ export default Vue.extend({
 
   data: () => ({
     mini: false,
-    darkTheme: false
+    darkTheme: false,
+    dialog: true,
   }),
   created: function() {
     const theme = localStorage.getItem(config.LOCAL_STORAGE_KEY_THEME);

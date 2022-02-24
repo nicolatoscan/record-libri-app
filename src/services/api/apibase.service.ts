@@ -11,6 +11,7 @@ export default class APIBaseService {
                 const ae = (e as AxiosError);
                 throw new Error(ae.response?.data?.message ?? 'Unknown error');
             }
+            throw e;
         }
     }
 }

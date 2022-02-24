@@ -57,21 +57,16 @@ export default Vue.extend({
 
     async add(t: TagDTO, done: () => void) {
         t.id = await apiService.tags.add(t);
-        this.tags.push(t);
         done();
     },
 
     async update(id: number, t: TagDTO, done: () => void) {
         await apiService.tags.update(id, t);
-        const i = this.tags.findIndex(x => x.id === id)
-        Object.assign(this.tags[i], t);
         done();
     },
 
     async remove(id: number, done: () => void) {
-        await apiService.tags.delete(id);
-        const i = this.tags.findIndex(x => x.id === id)
-        this.tags.splice(i, 1);
+        const x = await apiService.tags.delete(id);
         done();
     },
 
