@@ -4,6 +4,7 @@
       :headers="headers"
       :items="ncs"
       :defaultItem="defaultItem"
+      :loading="loading"
       @add="add($event.item, $event.done)"
       @update="update($event.id, $event.item, $event.done)"
       @remove="remove($event.id, $event.done)"
@@ -106,6 +107,7 @@ export default Vue.extend({
   components: { CrudTable },
 
   data: () => ({
+    loading: true,
     headers: [
       { text: 'Id', value: 'id', width: '10%' },
       { text: 'Descrizione', value: 'description', width: '90%' },
@@ -163,6 +165,7 @@ export default Vue.extend({
       apiService.nonCompliances.getGroups(),
       apiService.nonCompliances.getLanguages(),
     ]);
+    this.loading = false;
   },
 
   methods: {

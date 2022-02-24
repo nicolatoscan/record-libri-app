@@ -4,6 +4,7 @@
       :headers="headers"
       :items="users"
       :defaultItem="defaultItem"
+      :loading="loading"
       @add="add($event.item, $event.done)"
       @update="update($event.id, $event.item, $event.done)"
       @remove="remove($event.id, $event.done)"
@@ -74,6 +75,7 @@ export default Vue.extend({
 
   data: () => {
     return {
+      loading: true,
       headers: [
         { text: 'Id', value: 'id', width: '10%' },
         { text: 'Username', value: 'username', width: '40%' },
@@ -95,14 +97,20 @@ export default Vue.extend({
   },
 
   async created () {
-    const rr = await apiService.users.getRoles();
-    rolesDic = Object.fromEntries(Object.entries(rr).map(a => a.reverse()))
-    this.roles = Object.keys(rr).map(k => ({ text: k, value: rr[k] }));
-    this.users = await apiService.users.getAll();
+    [
+      this.roles,
+      this.users
+    ] = await Promise.all([
+      apiService.users.getRoles().then(rr => {
+        rolesDic = Object.fromEntries(Object.entries(rr).map(a => a.reverse()))
+        return Object.keys(rr).map(k => ({ text: k, value: rr[k] }));
+      }),
+      apiService.users.getAll()
+    ]);
+    this.loading = false;
   },
 
   methods: {
-
 
     formatUser(u: UserDTO) {
       return {

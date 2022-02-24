@@ -1,6 +1,6 @@
 <template>
 <div>
-  <v-data-table :headers="headers" :items="items" sort-by="calories" class="elevation-1" >
+  <v-data-table :headers="headers" :items="items" sort-by="calories" class="elevation-1" :loading="loading">
     <slot name="custom-col"></slot>
     <template v-slot:top>
       <v-toolbar flat color="secondary">
@@ -54,9 +54,7 @@
       <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
       <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
     </template>
-    <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize">Reset</v-btn>
-    </template>
+    <template v-slot:no-data><p class="ma-2">Nessun elemento</p></template>
   </v-data-table>
   <v-snackbar v-model="snackbarDelete" :timeout="2000" color="red">
     Elemento eliminato
@@ -80,6 +78,10 @@ export default Vue.extend({
     title: String,
     headers: Array,
     items: Array,
+    loading: {
+      type: Boolean,
+      default: false
+    },
     defaultItem: {
       type: Object,
       default: () => ({}),

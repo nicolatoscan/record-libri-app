@@ -4,6 +4,7 @@
       :headers="headers"
       :items="libraries"
       :defaultItem="defaultItem"
+      :loading="loading"
       @add="add($event.item, $event.done)"
       @update="update($event.id, $event.item, $event.done)"
       @remove="remove($event.id, $event.done)"
@@ -43,6 +44,7 @@ export default Vue.extend({
   components: { CrudTable },
 
   data: () => ({
+    loading: true,
     headers: [
       { text: 'Codice', value: 'code', width: '25%' },
       { text: 'Nome', value: 'name', width: '75%' },
@@ -59,6 +61,7 @@ export default Vue.extend({
 
   async created () {
     this.libraries = await apiService.libraries.getAll();
+    this.loading = false;
   },
 
   methods: {

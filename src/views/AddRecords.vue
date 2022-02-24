@@ -87,13 +87,14 @@
         :headers="headers"
         :items="records"
         :addButton="false"
+        :loading="loading"
     >
     </crud-table>
   </v-col>
 </template>
 
 <script lang="ts">
-import { RecordDTO, RecordTypeDTO, LibraryDTO } from '@/types/dto';
+import { RecordDTO } from '@/types/dto';
 import Vue from "vue";
 import apiService from '@/services/api.service';
 import CrudTable from '@/components/CrudTable.vue';
@@ -104,6 +105,7 @@ export default Vue.extend({
   components: { CrudTable },
 
   data: () => ({
+    loading: true,
     headers: [
       { text: 'Id', value: 'id', width: '10%' },
       { text: 'Autore', value: 'authorName', width: '90%' },
@@ -134,7 +136,8 @@ export default Vue.extend({
       apiService.records.getTypes(),
       apiService.recordTypes.getAll().then(rs => rs.map(t => ({ value: t.id ?? -1, text: t.name }))),
       apiService.libraries.getAll().then(ls => ls.map(l => ({ value: l.id ?? -1, text: l.name }))),
-    ])
+    ]);
+    this.loading = false;
   },
 
   methods: {
