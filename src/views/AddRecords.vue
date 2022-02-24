@@ -6,85 +6,17 @@
       </v-toolbar>
 
       <v-container>
-        <v-row class="mx-12">
-          <v-col cols="2" sm="3" md="2">
-            <v-checkbox
-              label="Authority"
-              v-model="addingItem.isAuthority"
-            ></v-checkbox>
-          </v-col>
-          <v-col cols="5" sm="9" md="5">
-            <v-text-field
-              label="Nome dell'autore"
-              v-model="addingItem.authorName"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="5" sm="12" md="5">
-            <v-text-field
-              label="Numero"
-              v-model="addingItem.number"
-            ></v-text-field>
-          </v-col>
-        </v-row>
-
-        <v-row class="mx-12">
-          <v-col cols="2" sm="4" md="2">
-            <v-checkbox
-              label="è fly - libero"
-              v-model="addingItem.fly"
-            ></v-checkbox>
-          </v-col>
-          <v-col cols="5" sm="8" md="5">
-            <v-select
-              label="Biblioteca"
-              :items="libraries"
-              v-model="addingItem.libraryId"
-            ></v-select>
-          </v-col>
-          <v-col cols="5" sm="12" md="5">
-            <v-select
-              label="Formato"
-              :items="formats"
-              v-model="addingItem.formatId"
-            ></v-select>
-          </v-col>
-        </v-row>
-
-        <v-row class="mx-12">
-          <v-col cols="6">
-            <v-checkbox
-              label="UNI Inglese"
-              v-model="addingItem.englishUNI"
-            ></v-checkbox>
-          </v-col>
-        </v-row>
-
-        <v-row class="mx-12">
-          <v-col cols="6">
-            <v-card outlined class="pa-3">
-              <h3 class=" d-flex justify-center">Tipo di record:</h3>
-              <v-radio-group v-model="addingItem.recordType" row>
-                <v-radio v-for="t in types" :key="t" :label="t" :value="t" ></v-radio>
-              </v-radio-group>
-            </v-card>
-          </v-col>
-
-          <v-col cols="6">
-            <v-card outlined class="pa-3">
-              <h3 class=" d-flex justify-center">Fondo F. Museo Civico:</h3>
-              <v-radio-group v-model="addingItem.found" row>
-                <v-radio v-for="f in founds" :key="f" :label="f" :value="f" ></v-radio>
-              </v-radio-group>
-            </v-card>
-          </v-col>
-        </v-row>
-
-
+        <v-form v-model="isAddFormValid"> 
+          <record-form
+            :editedItem="addingItem"
+            :types="types" :founds="founds" :formats="formats" :libraries="libraries"
+          />
+        </v-form>
       </v-container>
 
       <v-card-actions>
         <v-spacer />
-        <v-btn color="primary" @click="add">Aggiungi</v-btn>
+        <v-btn color="primary" @click="add" :disabled="!isAddFormValid">Aggiungi</v-btn>
         <v-spacer />
       </v-card-actions>
     </v-card>
@@ -95,7 +27,15 @@
       :items="records"
       :addButton="false"
       :loading="loading"
+      @update="update($event.id, $event.item, $event.done)"
+      @remove="remove($event.id, $event.done)"
     >
+      <template v-slot:edit-form="slotProps">
+        <record-form
+          :editedItem="slotProps.editedItem"
+          :types="types" :founds="founds" :formats="formats" :libraries="libraries"
+        />
+      </template>
     </crud-table>
   </v-col>
 </template>
@@ -105,19 +45,22 @@ import { RecordDTO } from '@/types/dto';
 import Vue from "vue";
 import apiService from '@/services/api.service';
 import CrudTable from '@/components/CrudTable.vue';
+import RecordForm from '@/components/forms/RecordForm.vue';
 import { SelectOption } from '@/common/types';
 
 export default Vue.extend({
   name: "AddRecords",
-  components: { CrudTable },
+  components: { CrudTable, RecordForm },
 
   data: () => ({
     loading: true,
+    isAddFormValid: false,
     headers: [
       { text: 'Id', value: 'id' },
       { text: 'Autore', value: 'authorName' },
       { text: 'Biblioteca', value: 'libraryName' },
       { text: 'Formato', value: 'formatName' },
+      { text: 'Actions', value: 'actions', sortable: false }
     ],
     records: [] as RecordDTO[],
     types: [] as string[],
@@ -153,7 +96,14 @@ export default Vue.extend({
 
   methods: {
 
+    fillMissingProps(r: RecordDTO) {
+      r.libraryName = this.libraries.find(l => l.value === r.libraryId)?.text ?? '';
+      r.formatName = this.formats.find(f => f.value === r.formatId)?.text ?? '';
+    },
+
     async add() {
+      if (!this.isAddFormValid) return;
+
       const id = await apiService.records.add(this.addingItem);
       this.records.push({ id, ...this.addingItem });
       this.addingItem = {
@@ -164,6 +114,21 @@ export default Vue.extend({
         recordType: '',
         authorName: '',
       } as RecordDTO;
+    },
+
+    async update(id: number, r: RecordDTO, done: () => void) {
+      await apiService.records.update(id, r);
+      this.fillMissingProps(r);
+      const i = this.records.findIndex(x => x.id === id)
+      Object.assign(this.records[i], r);
+      done();
+    },
+
+    async remove(id: number, done: () => void) {
+      await apiService.nonCompliances.delete(id);
+      const i = this.records.findIndex(x => x.id === id)
+      this.records.splice(i, 1);
+      done();
     },
 
   },

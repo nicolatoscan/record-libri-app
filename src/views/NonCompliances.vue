@@ -51,7 +51,7 @@
           <v-select
             label="Formato"
             :items="formats"
-            v-model="slotProps.editedItem.formats"
+            v-model="slotProps.editedItem.formatId"
             :rules="formatRules"
           ></v-select>
         </v-col>
