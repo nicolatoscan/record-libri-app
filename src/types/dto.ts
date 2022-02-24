@@ -37,11 +37,16 @@ export interface NonCompliancesDTO {
     id?: number;
     recordId: number;
     userId: number;
-    language: string;
     libraryId: number;
     recordTypeId: number;
     tagId: number;
+    language: string;
     description: string;
     group: string;
     dateAdded?: Date;
+
+    recordNumber?: number;
+    libraryName?: string;
+    recordTypeName?: string;
+    tagName?: string;
 }

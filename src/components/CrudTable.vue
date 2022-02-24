@@ -1,6 +1,6 @@
 <template>
 <div>
-  <v-data-table :headers="headers" :items="items" sort-by="calories" class="elevation-1" :loading="loading">
+  <v-data-table :headers="headers" :items="items" sort-by="calories" class="elevation-1 row-pointer" :loading="loading" @click:row="rowClick">
     <slot name="custom-col"></slot>
     <template v-slot:top>
       <v-toolbar flat color="secondary">
@@ -18,7 +18,7 @@
 
             <v-card-text>
               <v-container>
-                <v-form v-model="isFormValid">
+                <v-form v-model="isFormValid" :readonly="readonly">
                   <slot name="edit-form" v-bind="{ editedItem, editedId }"></slot>
                 </v-form>
               </v-container>
@@ -26,8 +26,13 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="primary" text @click="close">Annulla</v-btn>
-              <v-btn color="primary" :disabled="!isFormValid" @click="save">Salva</v-btn>
+              <div v-if="readonly">
+                <v-btn color="primary" class="ma-1" text @click="close">Chiudi</v-btn>
+              </div>
+              <div v-else>
+                <v-btn color="primary" class="ma-1" text @click="close">Annulla</v-btn>
+                <v-btn color="primary" class="ma-1" :disabled="!isFormValid" @click="save">Salva</v-btn>
+              </div>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -51,8 +56,8 @@
       <span>{{ column.itemTextHandler ? column.itemTextHandler(value) : value }}</span>
     </template>
     <template v-slot:item.actions="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
-      <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
+      <v-icon small class="mr-2" @click="editItem(item)" @click.stop>mdi-pencil</v-icon>
+      <v-icon small @click="deleteItem(item)" @click.stop>mdi-delete</v-icon>
     </template>
     <template v-slot:no-data><p class="ma-2">Nessun elemento</p></template>
   </v-data-table>
@@ -100,10 +105,14 @@ export default Vue.extend({
     isFormValid: false,
     snackbarDelete: false,
     snackbarSave: false,
+    readonly: false,
   }),
 
   computed: {
     formTitle () {
+      if (this.readonly) {
+        return "Visualizza";
+      }
       return this.editedId === null ? 'Nuovo elemento' : 'Modifica elemento';
     },
   },
@@ -122,6 +131,12 @@ export default Vue.extend({
   },
 
   methods: {
+
+    rowClick(row: any): void {
+      this.editedItem = { ...row };
+      this.readonly = true;
+      this.dialog = true;
+    },
 
     getItemSlotName(name: string): string {
       return `item.${name}`;
@@ -160,6 +175,7 @@ export default Vue.extend({
       this.$nextTick(() => {
         this.editedItem = { ...this.defaultItem };
         this.editedId = null;
+        this.readonly = false;
       })
     },
 
@@ -185,3 +201,9 @@ export default Vue.extend({
   },
 });
 </script>
+
+<style> 
+.row-pointer > .v-data-table__wrapper > table > tbody > tr:hover {  
+  cursor: pointer;
+}
+</style>

@@ -109,8 +109,15 @@ export default Vue.extend({
   data: () => ({
     loading: true,
     headers: [
-      { text: 'Id', value: 'id', width: '10%' },
-      { text: 'Descrizione', value: 'description', width: '90%' },
+      { text: 'Id', value: 'id' },
+      { text: 'Record', value: 'recordNumber' },
+      { text: 'Biblioteca', value: 'libraryName' },
+      { text: 'Lingua', value: 'language' },
+      { text: 'Lingua', value: 'language' },
+      { text: 'Tipo', value: 'recordTypeName' },
+      { text: 'Tag', value: 'tagName' },
+      { text: 'Descrizione', value: 'description' },
+      { text: 'Data', value: 'dateRecord', itemTextHandler: (x: Date) => new Date(x).toLocaleDateString() },
       { text: 'Actions', value: 'actions', sortable: false }
     ],
     
