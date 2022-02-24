@@ -31,7 +31,7 @@ const menuItems: MenuItem[] = [
   { title: "Non Conformitá",  href: "/non-compliances",  role: Role.User,   icon: "mdi-bookmark-remove", },
   { title: "Utenti",          href: "/users",            role: Role.Admin,  icon: "mdi-account-group", },
   { title: "Biblioteche",     href: "/libraries",        role: Role.Admin,  icon: "mdi-office-building", },
-  { title: "Tipi Record",     href: "/record-types",     role: Role.Admin,  icon: "mdi-rhombus-split", },
+  { title: "Formati",         href: "/formats",          role: Role.Admin,  icon: "mdi-rhombus-split", },
   { title: "Tag",             href: "/tags",             role: Role.User,   icon: "mdi-tag", },
 ]
 

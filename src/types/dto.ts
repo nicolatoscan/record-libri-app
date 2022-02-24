@@ -12,7 +12,7 @@ export interface UserDTO {
     token?: string;
 }
 
-export interface RecordTypeDTO {
+export interface FormatDTO {
     id: number;
     name: string;
 }
@@ -34,7 +34,7 @@ export interface RecordDTO {
     dateAdded: Date;
 
     addedById: number;
-    typeId: number;
+    formatId: number;
     libraryId: number;
 }
 
@@ -43,7 +43,7 @@ export interface NonCompliancesDTO {
     recordId: number;
     userId: number;
     libraryId: number;
-    recordTypeId: number;
+    formatId: number;
     tagId: number;
     language: string;
     description: string;
@@ -52,6 +52,6 @@ export interface NonCompliancesDTO {
 
     recordNumber?: number;
     libraryName?: string;
-    recordTypeName?: string;
+    formatName?: string;
     tagName?: string;
 }

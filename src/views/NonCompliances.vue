@@ -50,9 +50,9 @@
         <v-col cols="4" sm="12" md="4">
           <v-select
             label="Tipo record"
-            :items="recordTypes"
-            v-model="slotProps.editedItem.recordTypeId"
-            :rules="recordTypeRules"
+            :items="formats"
+            v-model="slotProps.editedItem.formats"
+            :rules="formatRules"
           ></v-select>
         </v-col>
         <v-col cols="4" sm="12" md="4">
@@ -114,7 +114,7 @@ export default Vue.extend({
       { text: 'Biblioteca', value: 'libraryName' },
       { text: 'Lingua', value: 'language' },
       { text: 'Lingua', value: 'language' },
-      { text: 'Tipo', value: 'recordTypeName' },
+      { text: 'Tipo', value: 'formatName' },
       { text: 'Tag', value: 'tagName' },
       { text: 'Descrizione', value: 'description' },
       { text: 'Data', value: 'dateRecord', itemTextHandler: (x: Date) => new Date(x).toLocaleDateString() },
@@ -126,7 +126,7 @@ export default Vue.extend({
     records: [] as SelectOption[],
     users: [] as SelectOption[],
     libraries: [] as SelectOption[],
-    recordTypes: [] as SelectOption[],
+    formats: [] as SelectOption[],
     tags: [] as SelectOption[],
     groups: [] as string[],
     languages: [] as string[],
@@ -135,7 +135,7 @@ export default Vue.extend({
       recordId: 0,
       userId: 0,
       libraryId: 0,
-      recordTypeId: 0,
+      formatId: 0,
       tagId: 0,
       group: '',
       language: '',
@@ -146,7 +146,7 @@ export default Vue.extend({
     userRules: [ rules.notEmpty('Seleziona un catalogatore') ],
     libraryRules: [ rules.notEmpty('Seleziona una bibliotecac') ],
     languageRules: [ rules.notEmpty('Seleziona una lingua') ],
-    recordTypeRules: [ rules.notEmpty('Seleziona un tipo') ],
+    formatRules: [ rules.notEmpty('Seleziona un tipo') ],
     tagRules: [ rules.notEmpty('Seleziona un tag') ],
     groupRules: [ rules.notEmpty('Seleziona un gruppo') ],
     descriptionRules: [ rules.notEmpty('Aggiungi una descrizione'), rules.length(10000) ],
@@ -158,7 +158,7 @@ export default Vue.extend({
       this.records,
       this.users,
       this.libraries,
-      this.recordTypes,
+      this.formats,
       this.tags,
       this.groups,
       this.languages
@@ -167,7 +167,7 @@ export default Vue.extend({
       apiService.records.getNumbers().then(rs => rs.map(r => ({ value: r.id ?? -1, text: r.number.toString() }))),
       apiService.users.getAll().then(us => us.map(u => ({ value: u.id ?? -1, text: u.username }))),
       apiService.libraries.getAll().then(ls => ls.map(l => ({ value: l.id ?? -1, text: l.name }))),
-      apiService.recordTypes.getAll().then(rs => rs.map(r => ({ value: r.id ?? -1, text: r.name }))),
+      apiService.formats.getAll().then(fs => fs.map(f => ({ value: f.id ?? -1, text: f.name }))),
       apiService.tags.getAll().then(ts => ts.map(t => ({ value: t.id ?? -1, text: t.name }))),
       apiService.nonCompliances.getGroups(),
       apiService.nonCompliances.getLanguages(),
@@ -180,7 +180,7 @@ export default Vue.extend({
     fillMissingProps(nc: NonCompliancesDTO) {
       nc.recordNumber = +(this.records.find(r => r.value === nc.recordId)?.text ?? '');
       nc.libraryName = this.libraries.find(l => l.value === nc.libraryId)?.text ?? '';
-      nc.recordTypeName = this.recordTypes.find(r => r.value === nc.recordTypeId)?.text ?? '';
+      nc.formatName = this.formats.find(r => r.value === nc.formatId)?.text ?? '';
       nc.tagName = this.tags.find(t => t.value === nc.tagId)?.text ?? '';
     },
 

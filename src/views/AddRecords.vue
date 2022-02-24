@@ -44,8 +44,8 @@
           <v-col cols="5" sm="12" md="5">
             <v-select
               label="Tipo"
-              :items="recordTypes"
-              v-model="addingItem.typeId"
+              :items="formats"
+              v-model="addingItem.formatId"
             ></v-select>
           </v-col>
         </v-row>
@@ -111,12 +111,12 @@ export default Vue.extend({
     records: [] as RecordDTO[],
     types: [] as string[],
     founds: [] as string[],
-    recordTypes: [] as SelectOption[],
+    formats: [] as SelectOption[],
     libraries: [] as SelectOption[],
     isAuthority: false,
     addingItem: {
       libraryId: 0,
-      typeId: 0,
+      formatId: 0,
       number: 0,
       fly: false,
       recordType: '',
@@ -129,13 +129,13 @@ export default Vue.extend({
       this.records,
       this.types,
       this.founds,
-      this.recordTypes,
+      this.formats,
       this.libraries,
     ] = await Promise.all([
       apiService.records.getMine(),
       apiService.records.getTypes(),
       apiService.records.getFounds(),
-      apiService.recordTypes.getAll().then(rs => rs.map(t => ({ value: t.id ?? -1, text: t.name }))),
+      apiService.formats.getAll().then(fs => fs.map(f => ({ value: f.id ?? -1, text: f.name }))),
       apiService.libraries.getAll().then(ls => ls.map(l => ({ value: l.id ?? -1, text: l.name }))),
     ]);
     this.loading = false;
@@ -148,7 +148,7 @@ export default Vue.extend({
       this.records.push({ id, ...this.addingItem });
       this.addingItem = {
         libraryId: 0,
-        typeId: 0,
+        formatId: 0,
         number: 0,
         fly: false,
         recordType: '',

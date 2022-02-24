@@ -1,6 +1,6 @@
 <template>
   <crud-table
-      title="Tipologie Record"
+      title="Formati"
       :headers="headers"
       :items="types"
       :defaultItem="defaultItem"
@@ -24,14 +24,14 @@
 </template>
 
 <script lang="ts">
-import { RecordTypeDTO } from '@/types/dto';
+import { FormatDTO } from '@/types/dto';
 import Vue from "vue";
 import apiService from '@/services/api.service';
 import CrudTable from '@/components/CrudTable.vue';
 import rules from '@/common/form-rules';
 
 export default Vue.extend({
-  name: "RecordTypes",
+  name: "Formats",
   components: { CrudTable },
 
   data: () => ({
@@ -41,35 +41,35 @@ export default Vue.extend({
       { text: 'Nome', value: 'name', width: '75%' },
       { text: 'Actions', value: 'actions', sortable: false }
     ],
-    types: [] as RecordTypeDTO[],
+    types: [] as FormatDTO[],
     defaultItem: {
       name: '',
-    } as RecordTypeDTO,
+    } as FormatDTO,
     nameRules: [ rules.length(50) ],
   }),
 
   async created () {
-    this.types = await apiService.recordTypes.getAll();
+    this.types = await apiService.formats.getAll();
     this.loading = false;
   },
 
   methods: {
 
-    async add(t: RecordTypeDTO, done: () => void) {
-        t.id = await apiService.recordTypes.add(t);
+    async add(t: FormatDTO, done: () => void) {
+        t.id = await apiService.formats.add(t);
         this.types.push(t);
         done();
     },
 
-    async update(id: number, t: RecordTypeDTO, done: () => void) {
-        await apiService.recordTypes.update(id, t);
+    async update(id: number, t: FormatDTO, done: () => void) {
+        await apiService.formats.update(id, t);
         const i = this.types.findIndex(x => x.id === id)
         Object.assign(this.types[i], t);
         done();
     },
 
     async remove(id: number, done: () => void) {
-        await apiService.recordTypes.delete(id);
+        await apiService.formats.delete(id);
         const i = this.types.findIndex(x => x.id === id)
         this.types.splice(i, 1);
         done();

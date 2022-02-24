@@ -1,30 +1,30 @@
-import { RecordTypeDTO } from '@/types/dto';
+import { FormatDTO } from '@/types/dto';
 import { AxiosStatic } from 'axios';
 import APIBaseService from './apibase.service';
 
 
-class RecordTypesService extends APIBaseService {
+class FormatsService extends APIBaseService {
     constructor(
         private readonly axios: AxiosStatic,
         private readonly baseUrl: string
     ) {
         super();
-        this.baseUrl += '/record-types';
+        this.baseUrl += '/formats';
     }
 
-    async getAll(): Promise<RecordTypeDTO[]> {
+    async getAll(): Promise<FormatDTO[]> {
         return await this.axiosHandler(async () => {
             return await this.axios.get(this.baseUrl);
         })
     }
 
-    async add(type: RecordTypeDTO): Promise<number> {
+    async add(type: FormatDTO): Promise<number> {
         return await this.axiosHandler(async () => {
             return await this.axios.post(this.baseUrl, type);
         })
     }
 
-    async update(id: number, type: RecordTypeDTO): Promise<void> {
+    async update(id: number, type: FormatDTO): Promise<void> {
         return await this.axiosHandler(async () => {
             return await this.axios.patch(this.baseUrl + `/${id}`, type);
         })
@@ -39,4 +39,4 @@ class RecordTypesService extends APIBaseService {
 }
 
 
-export default RecordTypesService;
+export default FormatsService;
