@@ -24,13 +24,18 @@ export interface TagDTO {
 export interface RecordDTO {
     id?: number;
     number: number;
-    libraryId: number;
-    typeId: number;
     authorName?: string;
+    isAuthority: boolean;
+    englishUNI: boolean;
     fly: boolean;
     recordType: string;
-    addedById: number;
+    found: string;
+
     dateAdded: Date;
+
+    addedById: number;
+    typeId: number;
+    libraryId: number;
 }
 
 export interface NonCompliancesDTO {

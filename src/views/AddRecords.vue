@@ -62,11 +62,9 @@
 
           <v-col cols="6">
             <v-card outlined class="pa-3">
-              <h3 class=" d-flex justify-center">Tipo di record:</h3>
-              <v-radio-group row>
-                <v-radio label="Moderno"></v-radio>
-                <v-radio label="Pregio"></v-radio>
-                <v-radio label="Antico"></v-radio>
+              <h3 class=" d-flex justify-center">Fondo F. Museo Civico:</h3>
+              <v-radio-group v-model="addingItem.found" row>
+                <v-radio v-for="f in founds" :key="f" :label="f" :value="f" ></v-radio>
               </v-radio-group>
             </v-card>
           </v-col>
@@ -83,11 +81,11 @@
     </v-card>
 
     <crud-table
-        title="Ultimi record inseriti"
-        :headers="headers"
-        :items="records"
-        :addButton="false"
-        :loading="loading"
+      title="Ultimi record inseriti"
+      :headers="headers"
+      :items="records"
+      :addButton="false"
+      :loading="loading"
     >
     </crud-table>
   </v-col>
@@ -112,6 +110,7 @@ export default Vue.extend({
     ],
     records: [] as RecordDTO[],
     types: [] as string[],
+    founds: [] as string[],
     recordTypes: [] as SelectOption[],
     libraries: [] as SelectOption[],
     isAuthority: false,
@@ -129,11 +128,13 @@ export default Vue.extend({
     [ 
       this.records,
       this.types,
+      this.founds,
       this.recordTypes,
       this.libraries,
     ] = await Promise.all([
       apiService.records.getMine(),
       apiService.records.getTypes(),
+      apiService.records.getFounds(),
       apiService.recordTypes.getAll().then(rs => rs.map(t => ({ value: t.id ?? -1, text: t.name }))),
       apiService.libraries.getAll().then(ls => ls.map(l => ({ value: l.id ?? -1, text: l.name }))),
     ]);
