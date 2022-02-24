@@ -43,7 +43,7 @@
           </v-col>
           <v-col cols="5" sm="12" md="5">
             <v-select
-              label="Tipo"
+              label="Formato"
               :items="formats"
               v-model="addingItem.formatId"
             ></v-select>

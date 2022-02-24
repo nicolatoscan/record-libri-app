@@ -49,7 +49,7 @@
         </v-col>
         <v-col cols="4" sm="12" md="4">
           <v-select
-            label="Tipo record"
+            label="Formato"
             :items="formats"
             v-model="slotProps.editedItem.formats"
             :rules="formatRules"

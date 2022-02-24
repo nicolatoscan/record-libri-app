@@ -1,13 +1,13 @@
 <template>
   <crud-table
-      title="Formati"
-      :headers="headers"
-      :items="types"
-      :defaultItem="defaultItem"
-      :loading="loading"
-      @add="add($event.item, $event.done)"
-      @update="update($event.id, $event.item, $event.done)"
-      @remove="remove($event.id, $event.done)"
+    title="Formati"
+    :headers="headers"
+    :items="types"
+    :defaultItem="defaultItem"
+    :loading="loading"
+    @add="add($event.item, $event.done)"
+    @update="update($event.id, $event.item, $event.done)"
+    @remove="remove($event.id, $event.done)"
   >
     <template v-slot:edit-form="slotProps">
       <v-row>
