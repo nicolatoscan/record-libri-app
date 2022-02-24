@@ -3,7 +3,7 @@
   <v-data-table :headers="headers" :items="items" sort-by="calories" class="elevation-1 row-pointer" :loading="loading" @click:row="rowClick">
     <slot name="custom-col"></slot>
     <template v-slot:top>
-      <v-toolbar flat color="secondary">
+      <v-toolbar flat color="primary">
         <v-toolbar-title>{{ title }}</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
@@ -12,7 +12,7 @@
             <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Aggiungi</v-btn>
           </template>
           <v-card>
-            <v-toolbar dark color="secondary">
+            <v-toolbar dark color="primary">
               <v-toolbar-title class="flex text-center text-h5">{{formTitle}}</v-toolbar-title>
             </v-toolbar>
 

@@ -1,7 +1,7 @@
 <template>
   <v-col>
     <v-card class="mb-10 pb-5">
-      <v-toolbar dark color="secondary">
+      <v-toolbar dark color="primary">
         <v-toolbar-title class="flex text-center text-h5">Aggiungi Record</v-toolbar-title>
       </v-toolbar>
 
@@ -114,8 +114,10 @@ export default Vue.extend({
   data: () => ({
     loading: true,
     headers: [
-      { text: 'Id', value: 'id', width: '10%' },
-      { text: 'Autore', value: 'authorName', width: '90%' },
+      { text: 'Id', value: 'id' },
+      { text: 'Autore', value: 'authorName' },
+      { text: 'Biblioteca', value: 'libraryName' },
+      { text: 'Formato', value: 'formatName' },
     ],
     records: [] as RecordDTO[],
     types: [] as string[],
