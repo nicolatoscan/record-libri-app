@@ -70,7 +70,6 @@
 import Vue from 'vue';
 import userService from '@/services/user.service';
 import Menu from '@/components/Menu.vue';
-import Alert from '@/components/Alert.vue';
 import config from '@/common/config';
 
 export default Vue.extend({

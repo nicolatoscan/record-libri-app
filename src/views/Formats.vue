@@ -5,9 +5,9 @@
     :items="types"
     :defaultItem="defaultItem"
     :loading="loading"
-    @add="add($event.item, $event.done)"
-    @update="update($event.id, $event.item, $event.done)"
-    @remove="remove($event.id, $event.done)"
+    @add="add($event.item, $event.done, $event.fail)"
+    @update="update($event.id, $event.item, $event.done, $event.fail)"
+    @remove="remove($event.id, $event.done, $event.fail)"
   >
     <template v-slot:edit-form="slotProps">
       <v-row>
@@ -55,19 +55,31 @@ export default Vue.extend({
 
   methods: {
 
-    async add(t: FormatDTO, done: () => void) {
+    async add(t: FormatDTO, done: () => void, fail: (msg: string) => void) {
+      try {
         t.id = await apiService.formats.add(t);
-        done();
+      } catch (e) {
+        return fail('CIAO');
+      }
+      done();
     },
 
-    async update(id: number, t: FormatDTO, done: () => void) {
+    async update(id: number, t: FormatDTO, done: () => void, fail: (msg: string) => void) {
+      try {
         await apiService.formats.update(id, t);
-        done();
+      } catch (e) {
+        return fail('CIAO');
+      }
+      done();
     },
 
-    async remove(id: number, done: () => void) {
+    async remove(id: number, done: () => void, fail: (msg: string) => void) {
+      try {
         await apiService.formats.delete(id);
-        done();
+      } catch (e) {
+        return fail('CIAO');
+      }
+      done();
     },
 
   },
