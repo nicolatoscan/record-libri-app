@@ -24,22 +24,20 @@
         <h1 v-else>Libri liberi</h1>
       </v-toolbar-title>
     </v-toolbar>
-    <v-list-item class="px-2">
-      <v-list-item-avatar>
-        <v-img src="https://randomuser.me/api/portraits/men/85.jpg"></v-img>
-      </v-list-item-avatar>
 
-      <v-list-item-title>{{ getUsername() }}</v-list-item-title>
 
-      <v-btn icon @click.stop="mini = !mini">
-        <v-icon>mdi-chevron-left</v-icon>
-      </v-btn>
-    </v-list-item>
-
-    <v-divider></v-divider>
+    <v-divider />
     <Menu />
 
     <template v-slot:append>
+      <v-divider />
+
+      <v-list-item class="px-2">
+        <v-list-item-avatar><v-icon>mdi-account</v-icon><!-- <v-img src="https://randomuser.me/api/portraits/men/85.jpg"></v-img> --></v-list-item-avatar>
+        <v-list-item-title>{{ getUsername() }}</v-list-item-title>
+        <v-btn icon @click.stop="mini = !mini"><v-icon>mdi-chevron-left</v-icon></v-btn>
+      </v-list-item>
+
       <div class="pa-2" v-if="!mini">
         <v-btn block @click="changeTheme()">
           <v-icon class="ml-1">
@@ -53,6 +51,7 @@
           <v-icon v-else class="ml-1">mdi-exit-to-app</v-icon>
         </v-btn>
       </div>
+
     </template>
   </v-navigation-drawer>
 
