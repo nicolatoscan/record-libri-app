@@ -21,20 +21,18 @@ export interface TagDTO {
     id: number;
     name: string;
 }
+
 export interface RecordDTO {
     id?: number;
     number: number;
-    authorName?: string;
-    isAuthority: boolean;
-    englishUNI: boolean;
-    fly: boolean;
+    authorName: string | null;
     recordType: string;
     found: string;
     dateAdded: Date;
-
+    
     addedById: number;
-    formatId: number;
     libraryId: number;
+    formatId: number;
 
     libraryName?: string;
     formatName?: string;

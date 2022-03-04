@@ -33,10 +33,12 @@ export default Vue.extend({
     loading: true,
     isAddFormValid: false,
     headers: [
-      { text: 'Id', value: 'id' },
-      { text: 'Autore', value: 'authorName' },
+      { text: 'Id', value: 'id', width: '10%' },
+      { text: 'Numero', value: 'number' },
       { text: 'Biblioteca', value: 'libraryName' },
       { text: 'Formato', value: 'formatName' },
+      { text: 'Tipo', value: 'recordType' },
+      { text: 'Autore', value: 'authorName' },
       { text: 'Actions', value: 'actions', sortable: false }
     ],
     records: [] as RecordDTO[],
@@ -48,9 +50,8 @@ export default Vue.extend({
       libraryId: 0,
       formatId: 0,
       number: 0,
-      fly: false,
       recordType: '',
-      authorName: '',
+      authorName: null,
     } as RecordDTO,
   }),
 
@@ -73,23 +74,23 @@ export default Vue.extend({
 
   methods: {
 
-    fillMissingProps(r: RecordDTO) {
+    fillMissingProps(r: RecordDTO): RecordDTO {
       r.libraryName = this.libraries.find(l => l.value === r.libraryId)?.text ?? '';
       r.formatName = this.formats.find(f => f.value === r.formatId)?.text ?? '';
+      return r;
     },
 
     async add() {
       if (!this.isAddFormValid) return;
 
       const id = await apiService.records.add(this.addingItem);
-      this.records.push({ id, ...this.addingItem });
+      this.records.push(this.fillMissingProps( { id, ...this.addingItem } ));
       this.addingItem = {
         libraryId: 0,
         formatId: 0,
         number: 0,
-        fly: false,
         recordType: '',
-        authorName: '',
+        authorName: null,
       } as RecordDTO;
     },
 

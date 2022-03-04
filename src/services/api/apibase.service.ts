@@ -5,7 +5,7 @@ export default class APIBaseService {
     async axiosHandler(fn: () => Promise<AxiosResponse>): Promise<any> {
         try {
             const res = await fn();
-            return res.data;
+            return res?.data;
         } catch (e) {
             if (axios.isAxiosError(e)) {
                 const ae = (e as AxiosError);

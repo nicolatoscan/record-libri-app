@@ -90,18 +90,9 @@ export default Vue.extend({
     title: String,
     headers: Array,
     items: Array,
-    loading: {
-      type: Boolean,
-      default: false
-    },
-    defaultItem: {
-      type: Object,
-      default: () => ({}),
-    },
-    addButton: {
-      type: Boolean,
-      default: true
-    },
+    loading: { type: Boolean, default: false },
+    defaultItem: { type: Object, default: () => ({}) },
+    addButton: { type: Boolean, default: true },
   },
 
   data: () => ({
@@ -120,20 +111,14 @@ export default Vue.extend({
 
   computed: {
     formTitle () {
-      if (this.readonly) {
-        return "Visualizza";
-      }
+      if (this.readonly) return "Visualizza";
       return this.editedId === null ? 'Nuovo elemento' : 'Modifica elemento';
     },
   },
 
   watch: {
-    dialog (val) {
-      val || this.close()
-    },
-    dialogDelete (val) {
-      val || this.closeDelete()
-    },
+    dialog (val) { val || this.close() },
+    dialogDelete (val) { val || this.closeDelete() },
   },
 
   methods: {
