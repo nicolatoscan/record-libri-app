@@ -126,7 +126,7 @@ export default Vue.extend({
     },
 
     async remove(id: number, done: () => void) {
-      await apiService.nonCompliances.delete(id);
+      await apiService.records.delete(id);
       done();
     },
 

@@ -1,13 +1,30 @@
 <template>
   <crud-table
-    title="Ultimi record inseriti"
+    title="Record"
     :headers="headers"
     :items="records"
     :addButton="false"
     :loading="loading"
+    :filters="true"
     @update="update($event.id, $event.item, $event.done)"
     @remove="remove($event.id, $event.done)"
   >
+    <template v-slot:filter-form>
+      <v-row class="mx-4" justify="center" align="center">
+        <v-col cols="3" sm="6" md="3">
+          <DatePicker v-model="filters.dateStart" label="Data inizio" />
+        </v-col>
+        <v-col cols="3" sm="6" md="3">
+          <DatePicker v-model="filters.dateEnd" label="Data fine" />
+        </v-col>
+        <v-col cols="4" sm="9" md="4">
+          <v-select label="Catalogatore" :items="users" v-model="filters.userId"></v-select>
+        </v-col>
+        <v-col cols="2" sm="3" md="2">
+          <v-btn color="primary" @click="applyFilter()">Cerca</v-btn>
+        </v-col>
+      </v-row>
+    </template>
     <template v-slot:edit-form="slotProps">
       <record-form
         :editedItem="slotProps.editedItem"
@@ -18,18 +35,20 @@
 </template>
 
 <script lang="ts">
-import { RecordDTO } from '@/types/dto';
 import Vue from "vue";
+import { RecordDTO } from '@/types/dto';
 import apiService from '@/services/api.service';
 import CrudTable from '@/components/CrudTable.vue';
 import RecordForm from '@/components/forms/RecordForm.vue';
 import { SelectOption } from '@/common/types';
+import DatePicker from '@/components/inputs/DatePicker.vue'
 
 export default Vue.extend({
-  name: "AddRecords",
-  components: { CrudTable, RecordForm },
+  name: "Records",
+  components: { CrudTable, RecordForm, DatePicker },
 
   data: () => ({
+    date: null as string | null,
     loading: true,
     isAddFormValid: false,
     headers: [
@@ -41,18 +60,17 @@ export default Vue.extend({
       { text: 'Autore', value: 'authorName' },
       { text: 'Actions', value: 'actions', sortable: false }
     ],
+    filters: {
+      userId: null as number | null,
+      dateStart: null as string | null,
+      dateEnd: null as string | null,
+    },
     records: [] as RecordDTO[],
     types: [] as string[],
     founds: [] as string[],
     formats: [] as SelectOption[],
     libraries: [] as SelectOption[],
-    addingItem: {
-      libraryId: 0,
-      formatId: 0,
-      number: 0,
-      recordType: '',
-      authorName: null,
-    } as RecordDTO,
+    users: [] as SelectOption[],
   }),
 
   async created () {
@@ -62,12 +80,14 @@ export default Vue.extend({
       this.founds,
       this.formats,
       this.libraries,
+      this.users
     ] = await Promise.all([
       apiService.records.getMine(),
       apiService.records.getTypes(),
       apiService.records.getFounds(),
       apiService.formats.getAll().then(fs => fs.map(f => ({ value: f.id ?? -1, text: f.name }))),
       apiService.libraries.getAll().then(ls => ls.map(l => ({ value: l.id ?? -1, text: l.name }))),
+      apiService.users.getAll().then(us => us.map(u => ({ value: u.id ?? -1, text: u.username }))),
     ]);
     this.loading = false;
   },
@@ -80,18 +100,12 @@ export default Vue.extend({
       return r;
     },
 
-    async add() {
-      if (!this.isAddFormValid) return;
-
-      const id = await apiService.records.add(this.addingItem);
-      this.records.push(this.fillMissingProps( { id, ...this.addingItem } ));
-      this.addingItem = {
-        libraryId: 0,
-        formatId: 0,
-        number: 0,
-        recordType: '',
-        authorName: null,
-      } as RecordDTO;
+    async applyFilter() {
+      this.records = await apiService.records.getFiltered({
+        startDate: this.filters.dateStart ?? undefined,
+        endDate: this.filters.dateEnd ?? undefined,
+        userId: this.filters.userId ?? undefined
+      });
     },
 
     async update(id: number, r: RecordDTO, done: () => void) {
@@ -101,7 +115,7 @@ export default Vue.extend({
     },
 
     async remove(id: number, done: () => void) {
-      await apiService.nonCompliances.delete(id);
+      await apiService.records.delete(id);
       done();
     },
 

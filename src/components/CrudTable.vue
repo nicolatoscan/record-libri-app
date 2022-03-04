@@ -52,6 +52,9 @@
           </v-card>
         </v-dialog>
       </v-toolbar>
+      <v-container v-if="filters"><v-form v-model="isFormValid" :readonly="readonly">
+        <slot name="filter-form" v-bind="{ editedItem, editedId }"></slot>
+      </v-form></v-container>
     </template>
     <template v-for="column of headers.filter(c => c.itemTextHandler)" v-slot:[getItemSlotName(column.value)]="{ item, value, index }">
       <span>{{ column.itemTextHandler ? column.itemTextHandler(value) : value }}</span>
@@ -93,6 +96,7 @@ export default Vue.extend({
     loading: { type: Boolean, default: false },
     defaultItem: { type: Object, default: () => ({}) },
     addButton: { type: Boolean, default: true },
+    filters: { type: Boolean, default: false },
   },
 
   data: () => ({

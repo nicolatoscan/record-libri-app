@@ -28,6 +28,7 @@ interface MenuItem {
 
 const menuItems: MenuItem[] = [
   { title: "Aggiungi Record", href: "/add-records",      role: Role.User,   icon: "mdi-plus-box", },
+  { title: "Record",   href: "/records",       role: Role.User,   icon: "mdi-archive", },
   { title: "Non Conformitá",  href: "/non-compliances",  role: Role.User,   icon: "mdi-bookmark-remove", },
   { title: "Utenti",          href: "/users",            role: Role.Admin,  icon: "mdi-account-group", },
   { title: "Biblioteche",     href: "/libraries",        role: Role.Admin,  icon: "mdi-office-building", },
