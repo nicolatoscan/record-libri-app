@@ -10,7 +10,7 @@ import NonCompliancesService from './api/non-compliances.service';
 
 class APIService {
 
-    private readonly apiUrl = process.env.VUE_APP_API_URL;
+    private readonly apiUrl = process.env.VUE_APP_API_URL ?? '';
 
     public readonly auth            = new AuthService(axios, this.apiUrl);
     public readonly libraries       = new LibrariesService(axios, this.apiUrl);

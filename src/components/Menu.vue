@@ -34,6 +34,7 @@ const menuItems: MenuItem[] = [
   { title: "Biblioteche",     href: "/libraries",        role: Role.Admin,  icon: "mdi-office-building", },
   { title: "Formati",         href: "/formats",          role: Role.Admin,  icon: "mdi-rhombus-split", },
   { title: "Tag",             href: "/tags",             role: Role.User,   icon: "mdi-tag", },
+  { title: "Stampe",          href: "/prints",           role: Role.User,   icon: "mdi-printer", },
 ]
 
 export default Vue.extend({

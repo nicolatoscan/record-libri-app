@@ -16,6 +16,7 @@ const routes: Array<RouteConfig> = [
   { path: '/records',         name: 'Records',           component: () => import(/* webpackChunkName: "records" */ '../views/Records.vue') },
   { path: '/tags',            name: 'Tag',               component: () => import(/* webpackChunkName: "tags" */ '../views/Tags.vue') },
   { path: '/non-compliances', name: 'NonCompliances',    component: () => import(/* webpackChunkName: "non-compliances" */ '../views/NonCompliances.vue') },
+  { path: '/prints',          name: 'Prints',            component: () => import(/* webpackChunkName: "prints" */ '../views/Prints.vue') },
 ]
 
 const router = new VueRouter({
