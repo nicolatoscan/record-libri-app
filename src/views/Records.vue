@@ -3,27 +3,54 @@
     title="Record"
     :headers="headers"
     :items="records"
-    :addButton="false"
     :loading="loading"
     :filters="true"
     @update="update($event.id, $event.item, $event.done)"
     @remove="remove($event.id, $event.done)"
   >
+    <template v-slot:activator>
+      <!-- <v-btn v-if="!printable" color="grey darken-2" dark class="mb-2">Stampa</v-btn> -->
+      <p v-if="printable">ciao dio cane</p>
+      <div></div>
+    </template>
     <template v-slot:filter-form>
-      <v-row class="mx-4" justify="center" align="center">
-        <v-col cols="3" sm="6" md="3">
-          <DatePicker v-model="filters.dateStart" label="Data inizio" />
-        </v-col>
-        <v-col cols="3" sm="6" md="3">
-          <DatePicker v-model="filters.dateEnd" label="Data fine" />
-        </v-col>
-        <v-col cols="4" sm="9" md="4">
-          <v-select label="Catalogatore" :items="users" v-model="filters.userId"></v-select>
-        </v-col>
-        <v-col cols="2" sm="3" md="2">
-          <v-btn color="primary" @click="applyFilter()">Cerca</v-btn>
-        </v-col>
-      </v-row>
+      <v-card outlined class="pa-5 ma-2">
+        <v-row justify="center" align="center">
+          <v-col cols="4" md="4" sm="6">
+            <v-select label="Catalogatore" :items="users" v-model="filters.userId"></v-select>
+          </v-col>
+          <v-col cols="4" md="4" sm="6">
+            <v-select label="Biblioteca" :items="libraries" v-model="filters.libraryId"></v-select>
+          </v-col>
+          <v-col cols="2" md="2" sm="6">
+            <DatePicker v-model="filters.dateStart" label="Data inizio" />
+          </v-col>
+          <v-col cols="2" md="2" sm="6">
+            <DatePicker v-model="filters.dateEnd" label="Data fine" />
+          </v-col>
+        </v-row>
+        <v-row justify="end" align="center">
+          <v-col cols="3">
+            <v-btn color="primary darken-4" dark block @click="print()" :disabled="loading || !printable">
+              <v-icon left dark>mdi-printer</v-icon>
+              Stampa risultati
+            </v-btn>
+          </v-col>
+          <v-spacer />
+          <v-col cols="3">
+            <v-btn color="primary" text block outlined @click="reset()" :disabled="loading">
+              <v-icon left dark>mdi-close</v-icon>
+              Annulla ricerca
+            </v-btn>
+          </v-col>
+          <v-col cols="4">
+            <v-btn color="primary" block @click="applyFilter()" :disabled="loading">
+              <v-icon left dark>mdi-magnify</v-icon>
+              Cerca
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-card>
     </template>
     <template v-slot:edit-form="slotProps">
       <record-form
@@ -42,6 +69,7 @@ import CrudTable from '@/components/CrudTable.vue';
 import RecordForm from '@/components/forms/RecordForm.vue';
 import { SelectOption } from '@/common/types';
 import DatePicker from '@/components/inputs/DatePicker.vue'
+import printsService from '@/services/prints.service';
 
 export default Vue.extend({
   name: "Records",
@@ -51,6 +79,7 @@ export default Vue.extend({
     date: null as string | null,
     loading: true,
     isAddFormValid: false,
+    printable: false,
     headers: [
       { text: 'Id', value: 'id', width: '10%' },
       { text: 'Numero', value: 'number' },
@@ -62,6 +91,7 @@ export default Vue.extend({
     ],
     filters: {
       userId: null as number | null,
+      libraryId: null as number | null,
       dateStart: null as string | null,
       dateEnd: null as string | null,
     },
@@ -89,6 +119,8 @@ export default Vue.extend({
       apiService.libraries.getAll().then(ls => ls.map(l => ({ value: l.id ?? -1, text: l.name }))),
       apiService.users.getAll().then(us => us.map(u => ({ value: u.id ?? -1, text: u.username }))),
     ]);
+    this.libraries.unshift({ value: null, text: 'Tutte' });
+    this.users.unshift({ value: null, text: 'Tutti' });
     this.loading = false;
   },
 
@@ -100,12 +132,29 @@ export default Vue.extend({
       return r;
     },
 
+    async reset() {
+      this.filters = {
+        userId: null,
+        libraryId: null,
+        dateStart: null,
+        dateEnd: null,
+      };
+      await this.applyFilter();
+    },
+
     async applyFilter() {
+      this.printable = false;
+      this.loading = true;
+      this.records = [];
+      const libraryId = this.filters.libraryId ?? undefined;
       this.records = await apiService.records.getFiltered({
         startDate: this.filters.dateStart ?? undefined,
         endDate: this.filters.dateEnd ?? undefined,
-        userId: this.filters.userId ?? undefined
+        userId: this.filters.userId ?? undefined,
+        libraryId: libraryId,
       });
+      this.loading = false;
+      this.printable = !!libraryId;
     },
 
     async update(id: number, r: RecordDTO, done: () => void) {
@@ -118,6 +167,13 @@ export default Vue.extend({
       await apiService.records.delete(id);
       done();
     },
+
+    print() {
+      const library = this.libraries.find(l => l.value === this.filters.libraryId)?.text ?? null;
+      if (library) {
+        printsService.print(library, this.records.map(r => ({ ...r })));
+      }
+    }
 
   },
 });

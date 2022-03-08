@@ -1,4 +1,3 @@
-import { ApiRequestTimeoutResponse } from '@nestjs/swagger';
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { TDocumentDefinitions, DynamicContent, Content, StyleDictionary, Table } from "pdfmake/interfaces";
@@ -18,7 +17,7 @@ class PrintsService {
 
   constructor() { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
 
-  readonly styles: StyleDictionary = {
+  private readonly styles: StyleDictionary = {
     header: {
       fontSize: 18,
       bold: true,
@@ -34,7 +33,7 @@ class PrintsService {
     }
   }
 
-  readonly header: DynamicContent | Content = [{
+  private readonly header: DynamicContent | Content = [{
     margin: [30, 10, 30, 5],
     columns: [{
       image: imgStr,
@@ -100,7 +99,7 @@ class PrintsService {
     }
   }
 
-  public example(records: RecordDTO[]) {
+  public print(libraryName: string, records: RecordDTO[]) {
 
     const recordQuantities = this.getRecordQuantities(records);
 

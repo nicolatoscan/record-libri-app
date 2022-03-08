@@ -9,7 +9,9 @@
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="900px" >
           <template v-if="addButton" v-slot:activator="{ on, attrs }">
-            <v-btn color="primary darken-2" dark class="mb-2" v-bind="attrs" v-on="on">Aggiungi</v-btn>
+            <slot name="activator">
+              <v-btn color="primary darken-2" dark class="mb-2" v-bind="attrs" v-on="on">Aggiungi</v-btn>
+            </slot>
           </template>
           <v-card>
             <v-progress-linear :active="savingLoading" indeterminate absolute bottom></v-progress-linear>
