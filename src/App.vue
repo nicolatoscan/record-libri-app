@@ -21,7 +21,7 @@
     <v-toolbar dark color="primary">
       <v-toolbar-title class="flex text-center">
         <h1 v-if="mini">L</h1>
-        <h1 v-else>Libri liberi</h1>
+        <h1 v-else>Librilib(e)ri</h1>
       </v-toolbar-title>
     </v-toolbar>
 

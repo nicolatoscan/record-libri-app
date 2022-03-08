@@ -1,6 +1,5 @@
 export interface LibraryDTO {
     id?: number;
-    code: string;
     name: string;
 }
 
