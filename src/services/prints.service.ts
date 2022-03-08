@@ -21,7 +21,10 @@ class PrintsService {
     header: {
       fontSize: 18,
       bold: true,
-      margin: [0, 0, 0, 10]
+      margin: [10, 20, 0, 10]
+    },
+    info: {
+      fontSize: 14,
     },
     table: {
       margin: [0, 5, 0, 15]
@@ -48,6 +51,12 @@ class PrintsService {
   }, {
     canvas: [{ type: 'line', x1: 30, y1: 0, x2: 595 - 30, y2: 0, lineWidth: 2 }]
   }];
+
+  private readonly footer: DynamicContent | Content =  (currentPage: number, pageCount: number) => ({
+    text: `Pagina ${currentPage}/${pageCount}`,
+    alignment: 'right',
+    margin: [40, 10, 40, 10],
+  });
 
   private getRecordQuantities(records: RecordDTO[]): RecordQuantities[] {
     const typesByFormat: { [key: string]: string[] } = records.reduce((result, item) => ({
@@ -90,6 +99,7 @@ class PrintsService {
 
   private getRecordTable(records: RecordDTO[]): Table {
     return {
+      widths: ['*', '*', '*', '*'],
       body: [
         ['Record', 'Data', 'Tipo', 'NMC'].map(x => ({ text: x, style: 'tableHeader', alignment: 'center', fillColor: '#FF0000', color: '#FFFFFF' })),
         ...records.map((r, i) =>
@@ -99,16 +109,20 @@ class PrintsService {
     }
   }
 
-  public print(libraryName: string, records: RecordDTO[]) {
+  public print(libraryName: string, dateStart: Date, dateEnd: Date, records: RecordDTO[]) {
 
     const recordQuantities = this.getRecordQuantities(records);
 
     const doc: TDocumentDefinitions = {
-      pageMargins: [40, 100, 40, 60],
-      header: this.header,
+      pageMargins: [40, 100, 40, 50],
       styles: this.styles,
+      header: this.header,
+      footer: this.footer,
 
       content: [
+        { text: `Libreria:\t${libraryName}`, style: 'info' },
+        { text: `Periodo:\t${dateStart.toLocaleDateString('it-IT')} - ${dateEnd.toLocaleDateString('it-IT')}`, style: 'info' },
+
         { text: 'Tipi di record', style: 'header' },
         { style: 'tableExample', table: this.getRecordTypeTable(recordQuantities) },
         

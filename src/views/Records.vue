@@ -170,8 +170,11 @@ export default Vue.extend({
 
     print() {
       const library = this.libraries.find(l => l.value === this.filters.libraryId)?.text ?? null;
+      const dateStart = this.filters.dateStart ? new Date(this.filters.dateStart) : this.records.map(r => new Date(r.dateAdded)).reduce((a, b) => a < b ? a : b, new Date());
+      const dateEnd = this.filters.dateEnd ? new Date(this.filters.dateEnd) : new Date();
+
       if (library) {
-        printsService.print(library, this.records.map(r => ({ ...r })));
+        printsService.print(library, dateStart, dateEnd, this.records.map(r => ({ ...r })));
       }
     }
 

@@ -108,7 +108,6 @@ export default Vue.extend({
       this.addingItem.number = +this.addingItem.number;
       const id = await apiService.records.add(this.addingItem);
       this.records.push(this.fillMissingProps( { id, ...this.addingItem } ));
-      console.log(this.records);
 
       this.addingItem = {
         libraryId: 0,
