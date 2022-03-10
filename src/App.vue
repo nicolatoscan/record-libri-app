@@ -21,7 +21,7 @@
     <v-toolbar dark color="primary">
       <v-toolbar-title class="flex text-center">
         <h1 v-if="mini">L</h1>
-        <h1 v-else>Libri liberi</h1>
+        <h1 v-else>Librilib(e)ri</h1>
       </v-toolbar-title>
     </v-toolbar>
 
@@ -70,7 +70,6 @@
 import Vue from 'vue';
 import userService from '@/services/user.service';
 import Menu from '@/components/Menu.vue';
-import Alert from '@/components/Alert.vue';
 import config from '@/common/config';
 
 export default Vue.extend({

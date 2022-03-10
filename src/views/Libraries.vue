@@ -11,15 +11,7 @@
   >
     <template v-slot:edit-form="slotProps">
       <v-row>
-        <v-col cols="12" sm="3" md="3">
-          <v-text-field
-            label="Codice"
-            v-model="slotProps.editedItem.code"
-            :rules="codeRules"
-            :counter="50"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" sm="9" md="9">
+        <v-col cols="12" sm="12" md="12">
           <v-text-field
             label="Nome"
             v-model="slotProps.editedItem.name" 
@@ -46,17 +38,14 @@ export default Vue.extend({
   data: () => ({
     loading: true,
     headers: [
-      { text: 'Id', value: 'id', width: '10%' },
-      { text: 'Codice', value: 'code', width: '20%' },
-      { text: 'Nome', value: 'name', width: '70%' },
+      { text: 'Id', value: 'id', width: '15%' },
+      { text: 'Nome', value: 'name', width: '85%' },
       { text: 'Actions', value: 'actions', sortable: false }
     ],
     libraries: [] as LibraryDTO[],
     defaultItem: {
-      code: '',
       name: '',
     } as LibraryDTO,
-    codeRules: [ rules.notEmpty(), rules.length(50) ],
     nameRules: [ rules.notEmpty(), rules.length(100) ],
   }),
 
@@ -69,7 +58,7 @@ export default Vue.extend({
 
     async add(l: LibraryDTO, done: () => void) {
       const res = await apiService.libraries.add(l);
-      l.id = (res as any).code;
+      l.id = res;
       done();
     },
 

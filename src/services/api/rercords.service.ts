@@ -1,4 +1,4 @@
-import { RecordDTO } from '@/types/dto';
+import { RecordDTO, RecordFilterDTO } from '@/types/dto';
 import { AxiosStatic } from 'axios';
 import APIBaseService from './apibase.service';
 
@@ -51,6 +51,12 @@ class RecordsService extends APIBaseService {
     async add(record: RecordDTO): Promise<number> {
         return await this.axiosHandler(async () => {
             return await this.axios.post(this.baseUrl, record);
+        })
+    }
+
+    async getFiltered(filters: RecordFilterDTO): Promise<RecordDTO[]> {
+        return await this.axiosHandler(async () => {
+            return await this.axios.post(this.baseUrl + '/filters', filters);
         })
     }
 

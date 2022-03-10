@@ -13,8 +13,10 @@ const routes: Array<RouteConfig> = [
   { path: '/users',           name: 'Users',             component: () => import(/* webpackChunkName: "users" */ '../views/Users.vue') },
   { path: '/formats',         name: 'Formats',           component: () => import(/* webpackChunkName: "formats" */ '../views/Formats.vue') },
   { path: '/add-records',     name: 'AddRecords',        component: () => import(/* webpackChunkName: "add-records" */ '../views/AddRecords.vue') },
+  { path: '/records',         name: 'Records',           component: () => import(/* webpackChunkName: "records" */ '../views/Records.vue') },
   { path: '/tags',            name: 'Tag',               component: () => import(/* webpackChunkName: "tags" */ '../views/Tags.vue') },
   { path: '/non-compliances', name: 'NonCompliances',    component: () => import(/* webpackChunkName: "non-compliances" */ '../views/NonCompliances.vue') },
+  { path: '/prints',          name: 'Prints',            component: () => import(/* webpackChunkName: "prints" */ '../views/Prints.vue') },
 ]
 
 const router = new VueRouter({

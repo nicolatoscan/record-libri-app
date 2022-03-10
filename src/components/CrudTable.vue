@@ -9,7 +9,9 @@
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="900px" >
           <template v-if="addButton" v-slot:activator="{ on, attrs }">
-            <v-btn color="primary darken-2" dark class="mb-2" v-bind="attrs" v-on="on">Aggiungi</v-btn>
+            <slot name="activator">
+              <v-btn color="primary darken-2" dark class="mb-2" v-bind="attrs" v-on="on">Aggiungi</v-btn>
+            </slot>
           </template>
           <v-card>
             <v-progress-linear :active="savingLoading" indeterminate absolute bottom></v-progress-linear>
@@ -52,6 +54,9 @@
           </v-card>
         </v-dialog>
       </v-toolbar>
+      <v-container v-if="filters"><v-form v-model="isFormValid" :readonly="readonly">
+        <slot name="filter-form" v-bind="{ editedItem, editedId }"></slot>
+      </v-form></v-container>
     </template>
     <template v-for="column of headers.filter(c => c.itemTextHandler)" v-slot:[getItemSlotName(column.value)]="{ item, value, index }">
       <span>{{ column.itemTextHandler ? column.itemTextHandler(value) : value }}</span>
@@ -62,40 +67,38 @@
     </template>
     <template v-slot:no-data><p class="ma-2">Nessun elemento</p></template>
   </v-data-table>
-  <v-snackbar v-model="snackbarDelete" :timeout="2000" color="red">
+  <!-- SNACKBARS -->
+  <v-snackbar v-model="snackbarDelete" :timeout="2000" color="danger">
     Elemento eliminato
-    <template v-slot:action="{ attrs }"><v-btn color="red" text v-bind="attrs" @click="snackbarDelete = false" >Chiudi</v-btn></template>
+    <template v-slot:action="{ attrs }"><v-btn color="danger" text v-bind="attrs" @click="snackbarDelete = false" >Chiudi</v-btn></template>
   </v-snackbar>
   <v-snackbar v-model="snackbarSave" :timeout="2000">
     Elemento salvato
-    <template v-slot:action="{ attrs }"><v-btn color="primary" text v-bind="attrs" @click="snackbarSave = false" >Chiudi</v-btn></template>
+    <template v-slot:action="{ attrs }"><v-btn text v-bind="attrs" @click="snackbarSave = false" >Chiudi</v-btn></template>
   </v-snackbar>
+
+  <!-- ALERT -->
+  <alert :dialog="errorDialog" :message="errorDialogText" @close="errorDialog = false" ></alert>
 </div>
 </template>
 
 
 <script lang="ts">
 import Vue from "vue";
+import Alert from '@/components/Alert.vue'
 
 export default Vue.extend({
   name: "CrudTable",
+  components: { Alert },
 
   props: {
     title: String,
     headers: Array,
     items: Array,
-    loading: {
-      type: Boolean,
-      default: false
-    },
-    defaultItem: {
-      type: Object,
-      default: () => ({}),
-    },
-    addButton: {
-      type: Boolean,
-      default: true
-    },
+    loading: { type: Boolean, default: false },
+    defaultItem: { type: Object, default: () => ({}) },
+    addButton: { type: Boolean, default: true },
+    filters: { type: Boolean, default: false },
   },
 
   data: () => ({
@@ -108,31 +111,28 @@ export default Vue.extend({
     snackbarSave: false,
     readonly: false,
     savingLoading: false,
+    errorDialog: false,
+    errorDialogText: '',
   }),
 
   computed: {
     formTitle () {
-      if (this.readonly) {
-        return "Visualizza";
-      }
+      if (this.readonly) return "Visualizza";
       return this.editedId === null ? 'Nuovo elemento' : 'Modifica elemento';
     },
   },
 
   watch: {
-    dialog (val) {
-      val || this.close()
-    },
-    dialogDelete (val) {
-      val || this.closeDelete()
-    },
-  },
-
-  async created () {
-    await this.initialize();
+    dialog (val) { val || this.close() },
+    dialogDelete (val) { val || this.closeDelete() },
   },
 
   methods: {
+
+
+    getItemSlotName(name: string): string {
+      return `item.${name}`;
+    },
 
     findIndex(id: number): number {
       return this.items.findIndex((i: any) => i.id === id);
@@ -144,40 +144,16 @@ export default Vue.extend({
       this.dialog = true;
     },
 
-    getItemSlotName(name: string): string {
-      return `item.${name}`;
-    },
-
-    async initialize () {
-      //TODO: 
-      // this.libraries = await apiService.libraries.getAll();
-    },
-
-    editItem (l: Record<string, unknown>) {
+    editItem(l: Record<string, unknown>) {
       this.editedId = l.id as number;
       this.editedItem = { ...l };
       this.dialog = true;
     },
 
-    deleteItem (l: Record<string, unknown>) {
+    deleteItem(l: Record<string, unknown>) {
       this.editedId = l.id as number;
       this.editedItem = { ...l };
       this.dialogDelete = true;
-    },
-
-    async deleteItemConfirm () {
-      this.savingLoading = false
-      if (this.editedId !== null) {
-        this.$emit('remove', { id: this.editedId, done: () => {
-          if (this.editedId !== null) {
-            this.items.splice(this.findIndex(this.editedId), 1);
-          }
-          this.snackbarDelete = true;
-          this.closeDelete();
-        }});
-      } else {
-        this.closeDelete();
-      }
     },
 
     close() {
@@ -199,6 +175,44 @@ export default Vue.extend({
       })
     },
 
+    removed(id: number | null) {
+      if (id) {
+        this.items.splice(this.findIndex(id), 1);
+      }
+      this.snackbarDelete = true;
+      this.savingLoading = false;
+      this.closeDelete();
+    },
+    failed(msg: string) {
+      this.errorDialogText = msg;
+      this.savingLoading = false;
+      this.errorDialog = true;
+    },
+
+    saved(id: number | null, item: Record<string, unknown>) {
+      if (id !== null) {
+        Object.assign(this.items[this.findIndex(id)], item);
+      } else {
+        this.items.push(item);
+      }
+      this.snackbarSave = true;
+      this.savingLoading = true;
+      this.close();
+    },
+
+    async deleteItemConfirm() {
+      this.savingLoading = false
+      if (this.editedId !== null) {
+        this.$emit('remove', {
+          id: this.editedId,
+          done: () => { this.removed(this.editedId); },
+          fail: (msg: string) => { this.failed(msg); }
+        });
+      } else {
+        this.closeDelete();
+      }
+    },
+
     async save() {
       if (!this.isFormValid) return;
 
@@ -208,18 +222,8 @@ export default Vue.extend({
         {
           id: this.editedId,
           item: this.editedItem,
-          done: () => {
-            if (this.editedId === null) {
-              this.items.push(this.editedItem);
-            } else {
-              Object.assign(
-                this.items[this.findIndex(this.editedId)],
-                this.editedItem
-              );
-            }
-            this.snackbarSave = true;
-            this.close();
-          }
+          done: () => { this.saved(this.editedId, this.editedItem) },
+          fail: (msg: string) => { this.failed(msg) }
         }
       );
     },
