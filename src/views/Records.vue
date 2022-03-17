@@ -16,10 +16,10 @@
       <v-card outlined class="pa-5 ma-2">
         <v-row justify="center" align="center">
           <v-col cols="4" md="4" sm="6">
-            <v-select label="Catalogatore" :items="users" v-model="filters.userId" :disabled="!isAdmin"></v-select>
+            <v-select label="Catalogatore" :items="users" v-model="filters.userId" :disabled="!isAdmin && !isCommitente"></v-select>
           </v-col>
           <v-col cols="4" md="4" sm="6">
-            <v-select label="Biblioteca" :items="libraries" v-model="filters.libraryId" :disabled="!isCommitente"></v-select>
+            <v-select label="Biblioteca" :items="libraries" v-model="filters.libraryId" :disabled="isCommitente"></v-select>
           </v-col>
           <v-col cols="2" md="2" sm="6">
             <DatePicker v-model="filters.dateStart" label="Data inizio" />
@@ -29,7 +29,7 @@
           </v-col>
         </v-row>
         <v-row justify="end" align="center">
-          <v-col cols="3">
+          <v-col cols="3" v-if="isAdmin">
             <v-btn color="primary darken-4" dark block @click="print()" :disabled="loading || !printable">
               <v-icon left dark>mdi-printer</v-icon>
               Stampa risultati
@@ -108,20 +108,18 @@ export default Vue.extend({
 
   async created () {
     const user = userService.getUser();
-    this.isCommitente = !(!user?.role || user.role < Role.Admin);
-    this.isAdmin = (!user?.role || user.role < Role.Admin);
+    this.isCommitente = (!!user?.role && user.role === Role.Commitente);
+    this.isAdmin = (!!user?.role && user.role >= Role.Admin);
     if (this.isCommitente) {
       this.headers.pop();
     }
     [ 
-      this.records,
       this.types,
       this.founds,
       this.formats,
       this.libraries,
       this.users
     ] = await Promise.all([
-      apiService.records.getMine(),
       apiService.records.getTypes(),
       apiService.records.getFounds(),
       apiService.formats.getAll().then(fs => fs.map(f => ({ value: f.id ?? -1, text: f.name }))),
@@ -134,9 +132,12 @@ export default Vue.extend({
 
     if (this.isCommitente) {
       this.filters.libraryId = user?.libraryId ?? null;
+      console.log(this.filters.libraryId);
     } else {
       this.filters.userId = user?.id ?? null;
     }
+
+    await this.applyFilter();
   },
 
   methods: {
