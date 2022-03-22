@@ -101,7 +101,7 @@ export default Vue.extend({
     defaultItem: { type: Object, default: () => ({}) },
     addButton: { type: Boolean, default: true },
     filters: { type: Boolean, default: false },
-    readonlyTable: { type: Boolean, default: true },
+    readonlyTable: { type: Boolean, default: false },
   },
 
   data: () => ({
