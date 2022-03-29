@@ -8,6 +8,7 @@ export interface UserDTO {
     username: string;
     password?: string;
     role: number;
+    libraryId?: number;
     token?: string;
 }
 

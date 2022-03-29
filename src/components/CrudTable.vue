@@ -62,8 +62,10 @@
       <span>{{ column.itemTextHandler ? column.itemTextHandler(value) : value }}</span>
     </template>
     <template v-slot:item.actions="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)" @click.stop>mdi-pencil</v-icon>
-      <v-icon small @click="deleteItem(item)" @click.stop>mdi-delete</v-icon>
+      <div v-if="!readonlyTable">
+        <v-icon small class="mr-2" @click="editItem(item)" @click.stop>mdi-pencil</v-icon>
+        <v-icon small @click="deleteItem(item)" @click.stop>mdi-delete</v-icon>
+      </div>
     </template>
     <template v-slot:no-data><p class="ma-2">Nessun elemento</p></template>
   </v-data-table>
@@ -99,6 +101,7 @@ export default Vue.extend({
     defaultItem: { type: Object, default: () => ({}) },
     addButton: { type: Boolean, default: true },
     filters: { type: Boolean, default: false },
+    readonlyTable: { type: Boolean, default: false },
   },
 
   data: () => ({
@@ -145,12 +148,16 @@ export default Vue.extend({
     },
 
     editItem(l: Record<string, unknown>) {
+      if (this.readonlyTable) return;
+
       this.editedId = l.id as number;
       this.editedItem = { ...l };
       this.dialog = true;
     },
 
     deleteItem(l: Record<string, unknown>) {
+      if (this.readonlyTable) return;
+
       this.editedId = l.id as number;
       this.editedItem = { ...l };
       this.dialogDelete = true;

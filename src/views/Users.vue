@@ -29,6 +29,17 @@
         </v-col>
       </v-row>
 
+      <v-row v-if="commitenteRole === slotProps.editedItem.role">
+        <v-col cols="12" sm="12" md="12">
+          <v-select
+            label="Libreria del commitente"
+            :items="libraries"
+            v-model="slotProps.editedItem.libraryId"
+            :rules="libraryRule" required
+          ></v-select>
+        </v-col>
+      </v-row>
+
       <v-row v-if="slotProps.editedId !== null">
         <v-col>
           <v-checkbox
@@ -66,6 +77,7 @@ import apiService from '@/services/api.service';
 import CrudTable from '@/components/CrudTable.vue';
 import { SelectOption } from '@/common/types';
 import rules from '@/common/form-rules';
+import { Role } from '@/common/enums';
 
 let rolesDic = {} as { [key: number]: string };
 
@@ -75,6 +87,7 @@ export default Vue.extend({
 
   data: () => {
     return {
+      commitenteRole: Role.Commitente,
       loading: true,
       headers: [
         { text: 'Id', value: 'id', width: '10%' },
@@ -84,6 +97,7 @@ export default Vue.extend({
       ],
       users: [] as UserDTO[],
       roles: [] as SelectOption[],
+      libraries: [] as SelectOption[],
       defaultItem: {
         id: -1,
         username: '',
@@ -92,6 +106,7 @@ export default Vue.extend({
       updatePassword: false,
       usernameRules: [ rules.length(120) ],
       roleRules: [ rules.notEmpty() ],
+      libraryRule: [ rules.notEmpty() ],
       passwordRules: [ rules.length(120, 8, 'La password deve essere di almeno 8 caratteri') ],
     }
   },
@@ -99,12 +114,14 @@ export default Vue.extend({
   async created () {
     [
       this.roles,
+      this.libraries,
       this.users
     ] = await Promise.all([
       apiService.users.getRoles().then(rr => {
         rolesDic = Object.fromEntries(Object.entries(rr).map(a => a.reverse()))
         return Object.keys(rr).map(k => ({ text: k, value: rr[k] }));
       }),
+      apiService.libraries.getAll().then(l => l.map(l => ({ text: l.name, value: l.id ?? -1 }))),
       apiService.users.getAll()
     ]);
     this.loading = false;
@@ -117,27 +134,31 @@ export default Vue.extend({
         id: u.id,
         username: u.username,
         role: u.role,
+        libraryId: u.libraryId,
       }
     },
 
-
     async add(u: UserDTO, done: () => void) {
-        u.id = await apiService.users.add(u);
-        done();
+      if (u.role !== Role.Commitente) delete u.libraryId;
+
+      u.id = await apiService.users.add(u);
+      done();
     },
 
     async update(id: number, u: UserDTO, done: () => void) {
-        await apiService.users.update(id, {
-          username: u.username,
-          role: u.role,
-          ...(this.updatePassword ? { password: u.password } : {})
-        });
-        done();
+      if (u.role !== Role.Commitente) delete u.libraryId;
+
+      await apiService.users.update(id, {
+        username: u.username,
+        role: u.role,
+        ...(this.updatePassword ? { password: u.password } : {})
+      });
+      done();
     },
 
     async remove(id: number, done: () => void) {
-        await apiService.libraries.delete(id);
-        done();
+      await apiService.libraries.delete(id);
+      done();
     },
 
   },

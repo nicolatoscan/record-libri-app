@@ -5,22 +5,21 @@
     :items="records"
     :loading="loading"
     :filters="true"
+    :reaadonlyTable="isCommitente"
     @update="update($event.id, $event.item, $event.done)"
     @remove="remove($event.id, $event.done)"
   >
     <template v-slot:activator>
-      <!-- <v-btn v-if="!printable" color="grey darken-2" dark class="mb-2">Stampa</v-btn> -->
-      <p v-if="printable">ciao dio cane</p>
       <div></div>
     </template>
     <template v-slot:filter-form>
       <v-card outlined class="pa-5 ma-2">
         <v-row justify="center" align="center">
           <v-col cols="4" md="4" sm="6">
-            <v-select label="Catalogatore" :items="users" v-model="filters.userId"></v-select>
+            <v-select label="Catalogatore" :items="users" v-model="filters.userId" :disabled="!isAdmin && !isCommitente"></v-select>
           </v-col>
           <v-col cols="4" md="4" sm="6">
-            <v-select label="Biblioteca" :items="libraries" v-model="filters.libraryId"></v-select>
+            <v-select label="Biblioteca" :items="libraries" v-model="filters.libraryId" :disabled="isCommitente"></v-select>
           </v-col>
           <v-col cols="2" md="2" sm="6">
             <DatePicker v-model="filters.dateStart" label="Data inizio" />
@@ -30,7 +29,7 @@
           </v-col>
         </v-row>
         <v-row justify="end" align="center">
-          <v-col cols="3">
+          <v-col cols="3" v-if="isAdmin">
             <v-btn color="primary darken-4" dark block @click="print()" :disabled="loading || !printable">
               <v-icon left dark>mdi-printer</v-icon>
               Stampa risultati
@@ -70,6 +69,8 @@ import RecordForm from '@/components/forms/RecordForm.vue';
 import { SelectOption } from '@/common/types';
 import DatePicker from '@/components/inputs/DatePicker.vue'
 import printsService from '@/services/prints.service';
+import userService from '@/services/user.service'
+import { Role } from '@/common/enums';
 
 export default Vue.extend({
   name: "Records",
@@ -101,18 +102,24 @@ export default Vue.extend({
     formats: [] as SelectOption[],
     libraries: [] as SelectOption[],
     users: [] as SelectOption[],
+    isCommitente: false,
+    isAdmin: false,
   }),
 
   async created () {
+    const user = userService.getUser();
+    this.isCommitente = (!!user?.role && user.role === Role.Commitente);
+    this.isAdmin = (!!user?.role && user.role >= Role.Admin);
+    if (this.isCommitente) {
+      this.headers.pop();
+    }
     [ 
-      this.records,
       this.types,
       this.founds,
       this.formats,
       this.libraries,
       this.users
     ] = await Promise.all([
-      apiService.records.getMine(),
       apiService.records.getTypes(),
       apiService.records.getFounds(),
       apiService.formats.getAll().then(fs => fs.map(f => ({ value: f.id ?? -1, text: f.name }))),
@@ -122,6 +129,15 @@ export default Vue.extend({
     this.libraries.unshift({ value: null, text: 'Tutte' });
     this.users.unshift({ value: null, text: 'Tutti' });
     this.loading = false;
+
+    if (this.isCommitente) {
+      this.filters.libraryId = user?.libraryId ?? null;
+      console.log(this.filters.libraryId);
+    } else {
+      this.filters.userId = user?.id ?? null;
+    }
+
+    await this.applyFilter();
   },
 
   methods: {
