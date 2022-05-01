@@ -55,7 +55,7 @@
 
       <v-col cols="6">
         <v-card outlined class="pa-3">
-          <h3 class=" d-flex justify-center">Fondo F. Museo Civico:</h3>
+          <h3 class=" d-flex justify-center">Tipologia Materiali:</h3>
           <div class="d-flex justify-center">
             <v-radio-group v-model="editedItem.found" row>
               <v-radio v-for="f in founds" :key="f" :label="f" :value="f" ></v-radio>
