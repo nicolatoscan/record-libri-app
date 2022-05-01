@@ -33,7 +33,7 @@
       <v-divider />
 
       <v-list-item class="px-2">
-        <v-list-item-avatar><v-icon>mdi-account</v-icon><!-- <v-img src="https://randomuser.me/api/portraits/men/85.jpg"></v-img> --></v-list-item-avatar>
+        <v-list-item-avatar><v-icon>mdi-account</v-icon></v-list-item-avatar>
         <v-list-item-title>{{ getUsername() }}</v-list-item-title>
         <v-btn icon @click.stop="mini = !mini"><v-icon>mdi-chevron-left</v-icon></v-btn>
       </v-list-item>
@@ -61,8 +61,6 @@
     </v-container>
   </v-main>
 
-  <!-- <v-footer app></v-footer> -->
-  <!-- <alert :dialog="dialog" :message="'DIOCAN'" @close="dialog = false" ></alert> -->
 </v-app>
 </template>
 
