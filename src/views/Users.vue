@@ -32,7 +32,7 @@
       <v-row v-if="commitenteRole === slotProps.editedItem.role">
         <v-col cols="12" sm="12" md="12">
           <v-select
-            label="Libreria del commitente"
+            label="Biblioteca del commitente"
             :items="libraries"
             v-model="slotProps.editedItem.libraryId"
             :rules="libraryRule" required

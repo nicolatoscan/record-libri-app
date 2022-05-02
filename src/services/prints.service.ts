@@ -120,7 +120,7 @@ class PrintsService {
       footer: this.footer,
 
       content: [
-        { text: `Libreria:\t${libraryName}`, style: 'info' },
+        { text: `Biblioteca:\t${libraryName}`, style: 'info' },
         { text: `Periodo:\t${dateStart.toLocaleDateString('it-IT')} - ${dateEnd.toLocaleDateString('it-IT')}`, style: 'info' },
 
         { text: 'Tipi di record', style: 'header' },
