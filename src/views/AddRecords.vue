@@ -100,7 +100,7 @@ export default Vue.extend({
       apiService.formats.getAll().then(fs => fs.map(f => ({ value: f.id ?? -1, text: f.name }))),
       apiService.libraries.getAll().then(ls => ls.map(l => ({ value: l.id ?? -1, text: l.name }))),
     ]);
-    this.defaultFormat = this.formats.find(f => f.text.includes('BK'))?.value ?? 0;
+    this.defaultFormat = this.formats.find(f => f.text.toLowerCase().includes('bk') || f.text.toLowerCase().includes('book') )?.value ?? 0;
     this.addingItem.formatId = this.defaultFormat;
     this.addingItem.recordType = this.types.indexOf('Nuovo') ? 'Nuovo' : this.types[0];
     this.loading = false;
