@@ -47,6 +47,15 @@ class PrintsService {
         { text: 'Report Lavoro mese', fontSize: 11, bold: true },
         { text: 'Librilib(e)ri - www.libriliberi.bz.it', fontSize: 11, bold: false },
       ]
+    }, {
+      margin: [10, 0, 0, 0],
+      stack: [
+        { text: 'Libriliberi Società Cooperativa', fontSize: 11, bold: false },
+        { text: 'C.F. e P.IVA 02610660215', fontSize: 11, bold: false },
+        { text: 'Via Sorrento, 31', fontSize: 11, bold: false },
+        { text: '39100 Bolzano (BZ)', fontSize: 11, bold: false },
+        { text: 'PEC: libriliberi@pec.it', fontSize: 11, bold: false },
+      ]
     }]
   }, {
     canvas: [{ type: 'line', x1: 30, y1: 0, x2: 595 - 30, y2: 0, lineWidth: 2 }]
