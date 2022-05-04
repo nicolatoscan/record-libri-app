@@ -32,7 +32,7 @@
       <v-row v-if="commitenteRole === slotProps.editedItem.role">
         <v-col cols="12" sm="12" md="12">
           <v-select
-            label="Libreria del commitente"
+            label="Biblioteca del commitente"
             :items="libraries"
             v-model="slotProps.editedItem.libraryId"
             :rules="libraryRule" required
@@ -61,6 +61,7 @@
         <v-col cols="12" sm="6" md="6">
           <v-text-field
             label="Conferma Password"
+            v-model="confirmPassword"
             :rules="[ v => (v && v === slotProps.editedItem.password) || 'Le password non coincidono' ]"
           ></v-text-field>
         </v-col>
@@ -103,6 +104,7 @@ export default Vue.extend({
         username: '',
         role: 0,
       } as UserDTO,
+      confirmPassword: '',
       updatePassword: false,
       usernameRules: [ rules.length(120) ],
       roleRules: [ rules.notEmpty() ],
@@ -142,6 +144,7 @@ export default Vue.extend({
       if (u.role !== Role.Commitente) delete u.libraryId;
 
       u.id = await apiService.users.add(u);
+      this.$data.confirmPassword = '';
       done();
     },
 
@@ -153,11 +156,13 @@ export default Vue.extend({
         role: u.role,
         ...(this.updatePassword ? { password: u.password } : {})
       });
+      this.$data.confirmPassword = '';
       done();
     },
 
     async remove(id: number, done: () => void) {
       await apiService.libraries.delete(id);
+      this.$data.confirmPassword = '';
       done();
     },
 

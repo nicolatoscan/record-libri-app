@@ -1,6 +1,6 @@
 <template>
 <div>
-  <v-data-table :headers="headers" :items="items" sort-by="calories" class="elevation-1 row-pointer" :loading="loading" @click:row="rowClick">
+  <v-data-table :headers="headers" :items="items" sort-by="id" :sort-desc="true" class="elevation-1 row-pointer" :loading="loading" @click:row="rowClick">
     <slot name="custom-col"></slot>
     <template v-slot:top>
       <v-toolbar flat color="primary">

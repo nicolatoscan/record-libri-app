@@ -113,7 +113,6 @@ export default Vue.extend({
       { text: 'Record', value: 'recordNumber' },
       { text: 'Biblioteca', value: 'libraryName' },
       { text: 'Lingua', value: 'language' },
-      { text: 'Lingua', value: 'language' },
       { text: 'Tipo', value: 'formatName' },
       { text: 'Tag', value: 'tagName' },
       { text: 'Descrizione', value: 'description' },

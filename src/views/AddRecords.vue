@@ -1,43 +1,48 @@
 <template>
-  <v-col>
-    <v-card class="mb-10 pb-5">
-      <v-toolbar dark color="primary">
-        <v-toolbar-title class="flex text-center text-h5">Aggiungi Record</v-toolbar-title>
-      </v-toolbar>
+  <div>
+    <v-col>
+      <v-card class="mb-10 pb-5" :loading="loading">
+        <v-toolbar dark color="primary">
+          <v-toolbar-title class="flex text-center text-h5">Aggiungi Record</v-toolbar-title>
+        </v-toolbar>
 
-      <v-container>
-        <v-form v-model="isAddFormValid"> 
+        <v-container>
+          <v-form v-model="isAddFormValid"> 
+            <record-form
+              :editedItem="addingItem"
+              :types="types" :founds="founds" :formats="formats" :libraries="libraries"
+            />
+          </v-form>
+        </v-container>
+
+        <v-card-actions>
+          <v-spacer />
+          <v-btn color="primary" @click="add" :disabled="!isAddFormValid">Aggiungi</v-btn>
+          <v-spacer />
+        </v-card-actions>
+      </v-card>
+
+      <crud-table
+        title="Ultimi record inseriti"
+        :headers="headers"
+        :items="records"
+        :addButton="false"
+        :loading="loading"
+        @update="update($event.id, $event.item, $event.done)"
+        @remove="remove($event.id, $event.done)"
+      >
+        <template v-slot:edit-form="slotProps">
           <record-form
-            :editedItem="addingItem"
+            :editedItem="slotProps.editedItem"
             :types="types" :founds="founds" :formats="formats" :libraries="libraries"
           />
-        </v-form>
-      </v-container>
+        </template>
+      </crud-table>
+    </v-col>
 
-      <v-card-actions>
-        <v-spacer />
-        <v-btn color="primary" @click="add" :disabled="!isAddFormValid">Aggiungi</v-btn>
-        <v-spacer />
-      </v-card-actions>
-    </v-card>
-
-    <crud-table
-      title="Ultimi record inseriti"
-      :headers="headers"
-      :items="records"
-      :addButton="false"
-      :loading="loading"
-      @update="update($event.id, $event.item, $event.done)"
-      @remove="remove($event.id, $event.done)"
-    >
-      <template v-slot:edit-form="slotProps">
-        <record-form
-          :editedItem="slotProps.editedItem"
-          :types="types" :founds="founds" :formats="formats" :libraries="libraries"
-        />
-      </template>
-    </crud-table>
-  </v-col>
+    <v-snackbar :timeout="2000" v-model="success" tile color="green">Reccord aggiunto</v-snackbar>
+    <v-snackbar :timeout="2000" v-model="error" tile color="red accent-2">Errore nell'aggiunta del record</v-snackbar>
+  </div>
 </template>
 
 <script lang="ts">
@@ -53,8 +58,11 @@ export default Vue.extend({
   components: { CrudTable, RecordForm },
 
   data: () => ({
+    error: false,
+    success: false,
     loading: true,
     isAddFormValid: false,
+    defaultFormat: 0,
     headers: [
       { text: 'Id', value: 'id', width: '10%' },
       { text: 'Numero', value: 'number' },
@@ -92,6 +100,9 @@ export default Vue.extend({
       apiService.formats.getAll().then(fs => fs.map(f => ({ value: f.id ?? -1, text: f.name }))),
       apiService.libraries.getAll().then(ls => ls.map(l => ({ value: l.id ?? -1, text: l.name }))),
     ]);
+    this.defaultFormat = this.formats.find(f => f.text.includes('BK'))?.value ?? 0;
+    this.addingItem.formatId = this.defaultFormat;
+    this.addingItem.recordType = this.types.indexOf('Nuovo') ? 'Nuovo' : this.types[0];
     this.loading = false;
   },
 
@@ -107,15 +118,22 @@ export default Vue.extend({
       if (!this.isAddFormValid) return;
       this.addingItem.number = +this.addingItem.number;
       const id = await apiService.records.add(this.addingItem);
-      this.records.push(this.fillMissingProps( { id, ...this.addingItem } ));
+      if (id) {
+        this.success = true;
+        this.records.push(this.fillMissingProps( { id, ...this.addingItem } ));
 
-      this.addingItem = {
-        libraryId: 0,
-        formatId: 0,
-        number: 0,
-        recordType: '',
-        authorName: '',
-      } as RecordDTO;
+        this.addingItem = {
+          number: 0,
+          libraryId: this.addingItem.libraryId,
+          formatId: this.defaultFormat,
+          recordType: this.addingItem.recordType,
+          authorName: '',
+        } as RecordDTO;
+
+      } else {
+        this.error = true;
+      }
+
     },
 
     async update(id: number, r: RecordDTO, done: () => void) {
