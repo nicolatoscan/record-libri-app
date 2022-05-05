@@ -117,7 +117,7 @@ export default Vue.extend({
       { text: 'Tipo', value: 'formatName' },
       { text: 'Tag', value: 'tagName' },
       { text: 'Descrizione', value: 'description' },
-      { text: 'Data', value: 'dateRecord', itemTextHandler: (x: Date) => new Date(x).toLocaleDateString() },
+      { text: 'Data', value: 'dateAdded', itemTextHandler: (x: Date) => new Date(x).toLocaleDateString() },
       { text: 'Actions', value: 'actions', sortable: false }
     ],
     
