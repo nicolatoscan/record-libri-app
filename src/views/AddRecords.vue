@@ -63,6 +63,7 @@ export default Vue.extend({
     loading: true,
     isAddFormValid: false,
     defaultFormat: 0,
+    defaultFund: '',
     headers: [
       { text: 'Id', value: 'id', width: '10%' },
       { text: 'Numero', value: 'number' },
@@ -101,8 +102,10 @@ export default Vue.extend({
       apiService.libraries.getAll().then(ls => ls.map(l => ({ value: l.id ?? -1, text: l.name }))),
     ]);
     this.defaultFormat = this.formats.find(f => f.text.toLowerCase().includes('bk') || f.text.toLowerCase().includes('book') )?.value ?? 0;
-    this.addingItem.formatId = this.defaultFormat;
     this.addingItem.recordType = this.types.indexOf('Nuovo') ? 'Nuovo' : this.types[0];
+    this.defaultFund = this.founds.indexOf('Moderno') ? 'Moderno' : this.founds[0];
+    this.addingItem.found = this.defaultFund;
+    this.addingItem.formatId = this.defaultFormat;
     this.loading = false;
   },
 
@@ -128,6 +131,7 @@ export default Vue.extend({
           formatId: this.defaultFormat,
           recordType: this.addingItem.recordType,
           authorName: '',
+          found: this.defaultFund,
         } as RecordDTO;
 
       } else {

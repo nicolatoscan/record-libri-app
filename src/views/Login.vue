@@ -32,9 +32,10 @@
           <v-alert class="ma-4" border="left" color="error" v-if="error" >Nome utente o password non validi</v-alert>
           <v-card-actions class="pa-4">
             <v-spacer></v-spacer>
-            <v-btn color="primary" :disabled="!isFormValid" @click="login()" @keyup.enter="login()">Login</v-btn>
+            <v-btn color="primary" :disabled="!isFormValid || loading" @click="login()" @keyup.enter="login()">Login</v-btn>
             <v-spacer></v-spacer>
           </v-card-actions>
+          <v-progress-linear :active="loading" indeterminate absolute bottom></v-progress-linear>
         </v-card>
       </v-flex>
     </v-layout>
@@ -56,6 +57,7 @@ export default Vue.extend({
       password: "",
       error: false,
       isFormValid: false,
+      loading: false,
       usernameRules: [ rules.length(250, 1) ],
       passwordRules: [ rules.length(250, 4, 'La password è di almeno 4 caratteri') ],
     };
@@ -63,6 +65,7 @@ export default Vue.extend({
 
   methods: {
     login: async function() {
+      this.loading = true;
       this.error = false;
       const user = await apiService.auth.login(this.username, this.password);
       if (user?.token) {
@@ -74,6 +77,7 @@ export default Vue.extend({
         this.username = "";
         this.password = "";
       }
+      this.loading = false;
     }
   }
 });
