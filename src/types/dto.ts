@@ -50,6 +50,7 @@ export interface NonCompliancesDTO {
     group: string;
     dateAdded?: Date;
 
+    username?: string;
     recordNumber?: number;
     libraryName?: string;
     formatName?: string;
