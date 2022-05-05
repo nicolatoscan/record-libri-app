@@ -4,7 +4,7 @@
       <v-flex sm12 md6 offset-md3>
         <v-card class="elevation-12">
           <v-toolbar dark color="primary">
-            <v-toolbar-title class="flex text-center"><h4>Login {{loading}}</h4></v-toolbar-title>
+            <v-toolbar-title class="flex text-center"><h4>Login</h4></v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             <v-form v-model="isFormValid">
