@@ -64,6 +64,7 @@ export default Vue.extend({
     isAddFormValid: false,
     defaultFormat: 0,
     defaultFund: '',
+    defaultRecordType: '',
     headers: [
       { text: 'Id', value: 'id', width: '10%' },
       { text: 'Numero', value: 'number' },
@@ -101,11 +102,15 @@ export default Vue.extend({
       apiService.formats.getAll().then(fs => fs.map(f => ({ value: f.id ?? -1, text: f.name }))),
       apiService.libraries.getAll().then(ls => ls.map(l => ({ value: l.id ?? -1, text: l.name }))),
     ]);
+
     this.defaultFormat = this.formats.find(f => f.text.toLowerCase().includes('bk') || f.text.toLowerCase().includes('book') )?.value ?? 0;
-    this.addingItem.recordType = this.types.indexOf('Nuovo') ? 'Nuovo' : this.types[0];
     this.defaultFund = this.founds.indexOf('Moderno') ? 'Moderno' : this.founds[0];
-    this.addingItem.found = this.defaultFund;
+    this.defaultRecordType = this.types.indexOf('Nuovo') ? 'Nuovo' : this.types[0];
+
     this.addingItem.formatId = this.defaultFormat;
+    this.addingItem.found = this.defaultFund;
+    this.addingItem.recordType = this.defaultRecordType;
+
     this.loading = false;
   },
 
@@ -129,9 +134,9 @@ export default Vue.extend({
           number: 0,
           libraryId: this.addingItem.libraryId,
           formatId: this.defaultFormat,
-          recordType: this.addingItem.recordType,
-          authorName: '',
+          recordType: this.defaultRecordType,
           found: this.defaultFund,
+          authorName: '',
         } as RecordDTO;
 
       } else {
