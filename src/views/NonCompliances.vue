@@ -111,6 +111,7 @@ export default Vue.extend({
     headers: [
       { text: 'Id', value: 'id' },
       { text: 'Record', value: 'recordNumber' },
+      { text: 'Utente', value: 'username' },
       { text: 'Biblioteca', value: 'libraryName' },
       { text: 'Lingua', value: 'language' },
       { text: 'Tipo', value: 'formatName' },
@@ -181,6 +182,8 @@ export default Vue.extend({
       nc.libraryName = this.libraries.find(l => l.value === nc.libraryId)?.text ?? '';
       nc.formatName = this.formats.find(r => r.value === nc.formatId)?.text ?? '';
       nc.tagName = this.tags.find(t => t.value === nc.tagId)?.text ?? '';
+      nc.username = this.users.find(u => u.value === nc.userId)?.text ?? '';
+      nc.dateAdded = new Date();
     },
 
     async add(nc: NonCompliancesDTO, done: () => void) {
