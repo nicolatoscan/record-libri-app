@@ -6,12 +6,8 @@ import { RecordDTO } from '@/types/dto'
 
 type RecordQuantities = {
   name: string;
-  nuovi: number;
-  modificati: number;
-  copie: number;
-  bonificati: number;
   total: number;
-}
+} & { [key: string]: number };
 
 class PrintsService {
 
@@ -67,22 +63,23 @@ class PrintsService {
     margin: [40, 10, 40, 10],
   });
 
-  private getRecordQuantities(records: RecordDTO[]): RecordQuantities[] {
+  private getRecordQuantities(records: RecordDTO[], by = (x: RecordDTO) => x.recordType): RecordQuantities[] {
     const typesByFormat: { [key: string]: string[] } = records.reduce((result, item) => ({
         ...result,
-        [item.formatName ?? '']: [ ...((result as any)[item.formatName ?? ''] || []), item.recordType, ],
+        [item.formatName ?? '']: [ ...((result as any)[item.formatName ?? ''] || []), by(item), ],
       }), {},
     );
 
     return Object.keys(typesByFormat).map(f => {
       return typesByFormat[f].reduce((rq, type) => {
         rq.total++;
-        if (type === 'Nuovo')             rq.nuovi++;
-        else if (type === 'Modificato')   rq.modificati++;
-        else if (type === 'Copia')        rq.copie++;
-        else if (type === 'Bonificato')   rq.bonificati++;
+        if (type in rq) {
+          rq[type]++;
+        } else {
+          rq[type] = 1;
+        }
         return rq;
-      }, { name: f, nuovi: 0, modificati: 0, copie: 0, bonificati: 0, total: 0 } as RecordQuantities);
+      }, { name: f, total: 0 } as RecordQuantities);
     });
   }
 
@@ -101,7 +98,17 @@ class PrintsService {
       widths: ['*', '*', '*', '*', '*', '*'],
       body: [
         ['Tipe', 'Nuovi', 'Modificati', 'Copie', 'Bonificati', 'Totale'].map(x => ({ text: x, style: 'tableHeader', alignment: 'center' })),
-        ...recordQuantities.map(r => [r.name, r.nuovi, r.modificati, r.copie, r.bonificati, r.total])
+        ...recordQuantities.map(r => [r.name, r['Nuovo'] ?? 0, r['Modificato'] ?? 0, r['Copia'] ?? 0, r['Bonificato'] ?? 0, r.total ?? 0])
+      ]
+    }
+  }
+
+  private getFormatType(recordQuantities: RecordQuantities[]): Table {
+    return {
+      widths: ['*', '*', '*', '*', '*', '*'],
+      body: [
+        ['Tipe', 'Moderno', 'Pregio', 'Antico', 'Totale'].map(x => ({ text: x, style: 'tableHeader', alignment: 'center' })),
+        ...recordQuantities.map(r => [r.name, r['Moderno'] ?? 0, r['Pregio'] ?? 0, r['Antico'] ?? 0, r.total ?? 0])
       ]
     }
   }
@@ -121,6 +128,7 @@ class PrintsService {
   public print(libraryName: string, dateStart: Date, dateEnd: Date, records: RecordDTO[]) {
 
     const recordQuantities = this.getRecordQuantities(records);
+    const recordFormatTypeQuantities = this.getRecordQuantities(records, (x: RecordDTO) => x.found);
 
     const doc: TDocumentDefinitions = {
       pageMargins: [40, 100, 40, 50],
@@ -137,6 +145,9 @@ class PrintsService {
         
         { text: 'Tipi', style: 'header' },
         { style: 'tableExample', table: this.getTypesTable(recordQuantities) },
+
+        { text: 'Tipologia di formato', style: 'header' },
+        { style: 'tableExample', table: this.getFormatType(recordFormatTypeQuantities) },
 
         { text: 'Record', style: 'header' },
         { style: 'tableExample', table: this.getRecordTable(records) },

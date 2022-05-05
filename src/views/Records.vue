@@ -132,7 +132,6 @@ export default Vue.extend({
 
     if (this.isCommitente) {
       this.filters.libraryId = user?.libraryId ?? null;
-      console.log(this.filters.libraryId);
     } else {
       this.filters.userId = user?.id ?? null;
     }
