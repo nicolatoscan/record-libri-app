@@ -87,7 +87,7 @@ class PrintsService {
     return {
       widths: ['*', '*'],
       body: [
-        [{ text: 'Tipo', style: 'tableHeader', alignment: 'center' }, { text: 'Quantità', style: 'tableHeader', alignment: 'center' }],
+        [{ text: 'Formato', style: 'tableHeader', alignment: 'center' }, { text: 'Quantità', style: 'tableHeader', alignment: 'center' }],
         ...recordQuantities.map(r => [r.name, r.total])
       ]
     }
@@ -97,7 +97,7 @@ class PrintsService {
     return {
       widths: ['*', '*', '*', '*', '*', '*'],
       body: [
-        ['Tipe', 'Nuovi', 'Modificati', 'Copie', 'Bonificati', 'Totale'].map(x => ({ text: x, style: 'tableHeader', alignment: 'center' })),
+        ['Formato', 'Nuovi', 'Modificati', 'Copie', 'Bonificati', 'Totale'].map(x => ({ text: x, style: 'tableHeader', alignment: 'center' })),
         ...recordQuantities.map(r => [r.name, r['Nuovo'] ?? 0, r['Modificato'] ?? 0, r['Copia'] ?? 0, r['Bonificato'] ?? 0, r.total ?? 0])
       ]
     }
@@ -107,7 +107,7 @@ class PrintsService {
     return {
       widths: ['*', '*', '*', '*', '*', '*'],
       body: [
-        ['Tipe', 'Moderno', 'Pregio', 'Antico', 'Totale'].map(x => ({ text: x, style: 'tableHeader', alignment: 'center' })),
+        ['Formato', 'Moderno', 'Pregio', 'Antico', 'Totale'].map(x => ({ text: x, style: 'tableHeader', alignment: 'center' })),
         ...recordQuantities.map(r => [r.name, r['Moderno'] ?? 0, r['Pregio'] ?? 0, r['Antico'] ?? 0, r.total ?? 0])
       ]
     }
@@ -140,13 +140,13 @@ class PrintsService {
         { text: `Biblioteca:\t${libraryName}`, style: 'info' },
         { text: `Periodo:\t${dateStart.toLocaleDateString('it-IT')} - ${dateEnd.toLocaleDateString('it-IT')}`, style: 'info' },
 
-        { text: 'Tipi di record', style: 'header' },
+        { text: 'Report generale', style: 'header' },
         { style: 'tableExample', table: this.getRecordTypeTable(recordQuantities) },
         
-        { text: 'Tipi', style: 'header' },
+        { text: 'Report dettaglio', style: 'header' },
         { style: 'tableExample', table: this.getTypesTable(recordQuantities) },
 
-        { text: 'Tipologia di formato', style: 'header' },
+        { text: 'Tipologia risorsa', style: 'header' },
         { style: 'tableExample', table: this.getFormatType(recordFormatTypeQuantities) },
 
         { text: 'Record', style: 'header' },
