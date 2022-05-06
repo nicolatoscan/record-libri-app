@@ -10,12 +10,12 @@
         ></v-text-field>
       </v-col>
       <v-col cols="6" sm="12" md="6">
-        <v-select
+        <v-autocomplete
           label="Biblioteca"
           :items="libraries"
           v-model="editedItem.libraryId"
           :rules="libraryRules"
-        ></v-select>
+        ></v-autocomplete>
       </v-col>
     </v-row>
 
