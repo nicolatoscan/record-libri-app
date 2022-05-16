@@ -1,6 +1,7 @@
 export interface LibraryDTO {
     id?: number;
     name: string;
+    budget: number | null;
 }
 
 export interface UserDTO {
@@ -62,4 +63,9 @@ export interface RecordFilterDTO {
     endDate?: string;
     userId?: number;
     libraryId?: number;
+}
+
+export interface BudgetUsedDTO {
+    libraryId: number,
+    budgetUsed: number
 }

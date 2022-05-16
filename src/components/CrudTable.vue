@@ -64,7 +64,7 @@
     <template v-slot:item.actions="{ item }">
       <div v-if="!readonlyTable">
         <v-icon small class="mr-2" @click="editItem(item)" @click.stop>mdi-pencil</v-icon>
-        <v-icon small @click="deleteItem(item)" @click.stop>mdi-delete</v-icon>
+        <v-icon v-if="!hideDelete" small @click="deleteItem(item)" @click.stop>mdi-delete</v-icon>
       </div>
     </template>
     <template v-slot:no-data><p class="ma-2">Nessun elemento</p></template>
@@ -102,6 +102,7 @@ export default Vue.extend({
     addButton: { type: Boolean, default: true },
     filters: { type: Boolean, default: false },
     readonlyTable: { type: Boolean, default: false },
+    hideDelete: { type: Boolean, default: false },
   },
 
   data: () => ({

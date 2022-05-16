@@ -31,7 +31,7 @@ import CrudTable from '@/components/CrudTable.vue';
 import rules from '@/common/form-rules';
 
 export default Vue.extend({
-  name: "RecordTypes",
+  name: "Tags",
   components: { CrudTable },
 
   data: () => ({
@@ -66,7 +66,7 @@ export default Vue.extend({
     },
 
     async remove(id: number, done: () => void) {
-        const x = await apiService.tags.delete(id);
+        await apiService.tags.delete(id);
         done();
     },
 

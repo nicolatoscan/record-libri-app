@@ -1,4 +1,4 @@
-import { LibraryDTO } from '@/types/dto';
+import { BudgetUsedDTO, LibraryDTO } from '@/types/dto';
 import { AxiosStatic } from 'axios';
 import APIBaseService from './apibase.service';
 
@@ -33,9 +33,21 @@ class LibrariesService extends APIBaseService {
         })
     }
 
+    async updateBudget(id: number, budget: number): Promise<void> {
+        return await this.axiosHandler(async () => {
+            return await this.axios.patch(this.baseUrl + `/${id}/budget`, { budget });
+        })
+    }
+
     async delete(id: number): Promise<void> {
         return await this.axiosHandler(async () => {
             return await this.axios.delete(this.baseUrl + `/${id}`);
+        })
+    }
+
+    async getBudgetUsed(): Promise<BudgetUsedDTO[]> {
+        return await this.axiosHandler(async () => {
+            return await this.axios.get(this.baseUrl + '/budget-used');
         })
     }
 

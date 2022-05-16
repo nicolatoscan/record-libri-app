@@ -34,6 +34,7 @@ const menuItems: MenuItem[] = [
   { title: "Biblioteche",     href: "/libraries",        role: Role.Admin,      icon: "mdi-office-building", },
   { title: "Formati",         href: "/formats",          role: Role.Admin,      icon: "mdi-rhombus-split", },
   { title: "Tag",             href: "/tags",             role: Role.Admin,       icon: "mdi-tag", },
+  { title: "Budget",          href: "/budgets",          role: Role.Admin,       icon: "mdi-counter", },
   // { title: "Stampe",          href: "/prints",           role: Role.User,       icon: "mdi-printer", },
 ]
 
