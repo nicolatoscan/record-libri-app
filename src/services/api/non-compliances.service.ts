@@ -30,6 +30,12 @@ class NonCompliancesService extends APIBaseService {
         })
     }
 
+    async getThisYear(): Promise<NonCompliancesDTO[]> {
+        return await this.axiosHandler(async () => {
+            return await this.axios.get(this.baseUrl + '/year');
+        })
+    }
+
     async add(nc: NonCompliancesDTO): Promise<number> {
         return await this.axiosHandler(async () => {
             return await this.axios.post(this.baseUrl, nc);
