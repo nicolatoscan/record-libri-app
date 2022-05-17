@@ -125,7 +125,7 @@ class PrintsService {
     }
   }
 
-  public print(libraryName: string, dateStart: Date, dateEnd: Date, records: RecordDTO[]) {
+  public print(libraryName: string | null, dateStart: Date, dateEnd: Date, records: RecordDTO[]) {
 
     const recordQuantities = this.getRecordQuantities(records);
     const recordFormatTypeQuantities = this.getRecordQuantities(records, (x: RecordDTO) => x.found);
@@ -137,7 +137,7 @@ class PrintsService {
       footer: this.footer,
 
       content: [
-        { text: `Biblioteca:\t${libraryName}`, style: 'info' },
+        { text: libraryName ? `Biblioteca:\t${libraryName}` : 'Tutte le biblioteche', style: 'info' },
         { text: `Periodo:\t${dateStart.toLocaleDateString('it-IT')} - ${dateEnd.toLocaleDateString('it-IT')}`, style: 'info' },
 
         { text: 'Report generale', style: 'header' },

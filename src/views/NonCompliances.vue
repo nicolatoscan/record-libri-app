@@ -5,10 +5,14 @@
       :items="ncs"
       :defaultItem="defaultItem"
       :loading="loading"
+      :filters="true"
       @add="add($event.item, $event.done)"
       @update="update($event.id, $event.item, $event.done)"
       @remove="remove($event.id, $event.done)"
   >
+    <template v-slot:filter-form>
+      <v-switch :disabled="loading" :value="true" label="Mostra solo anno corrente" @change="onlyYearChanged"></v-switch>
+    </template>
     <template v-slot:edit-form="slotProps">
       <v-row>
         <v-col cols="12" sm="12" md="12">
@@ -163,7 +167,7 @@ export default Vue.extend({
       this.groups,
       this.languages
     ] = await Promise.all([
-      apiService.nonCompliances.getAll(),
+      apiService.nonCompliances.getThisYear(),
       apiService.records.getNumbers().then(rs => rs.map(r => ({ value: r.id ?? -1, text: r.number.toString() }))),
       apiService.users.getAll().then(us => us.map(u => ({ value: u.id ?? -1, text: u.username }))),
       apiService.libraries.getAll().then(ls => ls.map(l => ({ value: l.id ?? -1, text: l.name }))),
@@ -176,6 +180,12 @@ export default Vue.extend({
   },
 
   methods: {
+
+    async onlyYearChanged(thisYear: boolean | null) {
+      this.loading = true;
+      this.ncs = thisYear ? await apiService.nonCompliances.getThisYear() : await apiService.nonCompliances.getAll();
+      this.loading = false;
+    },
 
     fillMissingProps(nc: NonCompliancesDTO) {
       nc.recordNumber = +(this.records.find(r => r.value === nc.recordId)?.text ?? '');
