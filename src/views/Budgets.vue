@@ -71,10 +71,11 @@ export default Vue.extend({
         id: l.id ?? 0,
         libraryName: l.name,
         budget: l.budget === null ? 'Non impostato' : l.budget,
-        budgetLeft: l.budget && bu ? l.budget - bu.budgetUsed : null,
+        budgetLeft: l.budget ? l.budget - (bu ? bu.budgetUsed : 0) : null,
         budgetUsed: bu ? bu.budgetUsed : 0,
       };
     });
+    console.log(this.budgets);
     this.loading = false;
   },
 
