@@ -64,6 +64,8 @@ export interface RecordFilterDTO {
     libraryId?: number;
 }
 
+export interface NCFilterDTO extends RecordFilterDTO {}
+
 export interface BudgetUsedDTO {
     libraryId: number,
     budgetUsed: number

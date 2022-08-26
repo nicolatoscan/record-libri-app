@@ -1,4 +1,4 @@
-import { NonCompliancesDTO } from '@/types/dto';
+import { NCFilterDTO, NonCompliancesDTO } from '@/types/dto';
 import { AxiosStatic } from 'axios';
 import APIBaseService from './apibase.service';
 
@@ -27,6 +27,12 @@ class NonCompliancesService extends APIBaseService {
     async getAll(): Promise<NonCompliancesDTO[]> {
         return await this.axiosHandler(async () => {
             return await this.axios.get(this.baseUrl);
+        })
+    }
+
+    async getFiltered(filters: NCFilterDTO): Promise<NonCompliancesDTO[]> {
+        return await this.axiosHandler(async () => {
+            return await this.axios.post(this.baseUrl + '/filters', filters);
         })
     }
 
