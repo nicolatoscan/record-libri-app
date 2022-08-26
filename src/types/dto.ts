@@ -41,7 +41,7 @@ export interface RecordDTO {
 
 export interface NonCompliancesDTO {
     id?: number;
-    recordId: number;
+    recordNumber: number;
     userId: number;
     libraryId: number;
     formatId: number;
@@ -52,7 +52,6 @@ export interface NonCompliancesDTO {
     dateAdded?: Date;
 
     username?: string;
-    recordNumber?: number;
     libraryName?: string;
     formatName?: string;
     tagName?: string;

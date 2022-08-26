@@ -19,7 +19,7 @@
           <v-autocomplete
             label="Numero record"
             :items="records"
-            v-model="slotProps.editedItem.recordId"
+            v-model="slotProps.editedItem.recordNumber"
             :rules="recordRules"
           ></v-autocomplete>
         </v-col>
@@ -136,7 +136,7 @@ export default Vue.extend({
     languages: [] as string[],
 
     defaultItem: {
-      recordId: 0,
+      recordNumber: 0,
       userId: 0,
       libraryId: 0,
       formatId: 0,
@@ -188,7 +188,6 @@ export default Vue.extend({
     },
 
     fillMissingProps(nc: NonCompliancesDTO) {
-      nc.recordNumber = +(this.records.find(r => r.value === nc.recordId)?.text ?? '');
       nc.libraryName = this.libraries.find(l => l.value === nc.libraryId)?.text ?? '';
       nc.formatName = this.formats.find(r => r.value === nc.formatId)?.text ?? '';
       nc.tagName = this.tags.find(t => t.value === nc.tagId)?.text ?? '';
