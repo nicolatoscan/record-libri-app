@@ -188,7 +188,7 @@ export default Vue.extend({
       const dateStart = this.filters.dateStart ? new Date(this.filters.dateStart) : this.records.map(r => new Date(r.dateAdded)).reduce((a, b) => a < b ? a : b, new Date());
       const dateEnd = this.filters.dateEnd ? new Date(this.filters.dateEnd) : new Date();
 
-      printsService.print(library, dateStart, dateEnd, this.records.map(r => ({ ...r })));
+      printsService.printRecords(library, dateStart, dateEnd, this.records.map(r => ({ ...r })));
     }
 
   },

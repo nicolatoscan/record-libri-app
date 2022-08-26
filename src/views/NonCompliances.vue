@@ -309,7 +309,7 @@ export default Vue.extend({
       const dateStart = this.filters.dateStart ? new Date(this.filters.dateStart) : this.ncs.map(r => new Date(r.dateAdded ?? new Date())).reduce((a, b) => a < b ? a : b, new Date());
       const dateEnd = this.filters.dateEnd ? new Date(this.filters.dateEnd) : new Date();
 
-      // printsService.print(library, dateStart, dateEnd, this.ncs.map(r => ({ ...r })));
+      printsService.printNC(library, dateStart, dateEnd, this.ncs.map(r => ({ ...r })));
     }
 
   },

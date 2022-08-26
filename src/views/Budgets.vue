@@ -45,7 +45,7 @@ export default Vue.extend({
   data: () => ({
     loading: true,
     headers: [
-      { text: 'Libreria', value: 'libraryName', width: '40%' },
+      { text: 'Biblioteca', value: 'libraryName', width: '40%' },
       { text: 'Record registrati', value: 'budgetUsed', width: '20%' },
       { text: 'Budget', value: 'budget', width: '20%' },
       { text: 'Budget Rimasto', value: 'budgetLeft', width: '20%' },
