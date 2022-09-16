@@ -11,17 +11,54 @@
       @remove="remove($event.id, $event.done)"
   >
     <template v-slot:filter-form>
+      <v-card outlined class="pa-5 ma-2">
+        {{filters.dateStart}}
+        <v-row justify="center" align="center">
+          <v-col cols="4" md="4" sm="6">
+            <v-select label="Catalogatore" :items="users" v-model="filters.userId" :disabled="!isAdmin && !isCommitente"></v-select>
+          </v-col>
+          <v-col cols="4" md="4" sm="6">
+            <v-select label="Biblioteca" :items="libraries" v-model="filters.libraryId" :disabled="isCommitente"></v-select>
+          </v-col>
+          <v-col cols="2" md="2" sm="6">
+            <DatePicker v-model="filters.dateStart" label="Data inizio" />
+          </v-col>
+          <v-col cols="2" md="2" sm="6">
+            <DatePicker v-model="filters.dateEnd" label="Data fine" />
+          </v-col>
+        </v-row>
+        <v-row justify="end" align="center">
+          <v-col cols="3" v-if="isAdmin">
+            <v-btn color="primary darken-4" dark block @click="print()" :disabled="loading || !printable">
+              <v-icon left dark>mdi-printer</v-icon>
+              Stampa risultati
+            </v-btn>
+          </v-col>
+          <v-spacer />
+          <v-col cols="3">
+            <v-btn color="primary" text block outlined @click="reset()" :disabled="loading">
+              <v-icon left dark>mdi-close</v-icon>
+              Annulla ricerca
+            </v-btn>
+          </v-col>
+          <v-col cols="4">
+            <v-btn color="primary" block @click="applyFilter()" :disabled="loading">
+              <v-icon left dark>mdi-magnify</v-icon>
+              Cerca
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-card>
       <v-switch :disabled="loading" :value="true" label="Mostra solo anno corrente" @change="onlyYearChanged"></v-switch>
     </template>
     <template v-slot:edit-form="slotProps">
       <v-row>
         <v-col cols="12" sm="12" md="12">
-          <v-autocomplete
+          <v-text-field
             label="Numero record"
-            :items="records"
-            v-model="slotProps.editedItem.recordId"
+            v-model="slotProps.editedItem.recordNumber"
             :rules="recordRules"
-          ></v-autocomplete>
+          ></v-text-field>
         </v-col>
       </v-row>
 
@@ -103,12 +140,16 @@ import { NonCompliancesDTO } from '@/types/dto';
 import Vue from "vue";
 import apiService from '@/services/api.service';
 import CrudTable from '@/components/CrudTable.vue';
+import userService from '@/services/user.service'
 import rules from '@/common/form-rules';
 import { SelectOption } from '@/common/types';
+import { Role } from '@/common/enums';
+import printsService from '@/services/prints.service';
+import DatePicker from '@/components/inputs/DatePicker.vue'
 
 export default Vue.extend({
   name: "NonCompliances",
-  components: { CrudTable },
+  components: { CrudTable, DatePicker },
 
   data: () => ({
     loading: true,
@@ -124,10 +165,20 @@ export default Vue.extend({
       { text: 'Data', value: 'dateAdded', itemTextHandler: (x: Date) => new Date(x).toLocaleDateString() },
       { text: 'Actions', value: 'actions', sortable: false }
     ],
+
+    filters: {
+      userId: null as number | null,
+      libraryId: null as number | null,
+      dateStart: null as string | null,
+      dateEnd: null as string | null,
+    },
+    isCommitente: false,
+    isAdmin: false,
+    printable: false,
     
     ncs: [] as NonCompliancesDTO[],
 
-    records: [] as SelectOption[],
+    // records: [] as SelectOption[],
     users: [] as SelectOption[],
     libraries: [] as SelectOption[],
     formats: [] as SelectOption[],
@@ -136,7 +187,7 @@ export default Vue.extend({
     languages: [] as string[],
 
     defaultItem: {
-      recordId: 0,
+      recordNumber: 0,
       userId: 0,
       libraryId: 0,
       formatId: 0,
@@ -157,9 +208,16 @@ export default Vue.extend({
   }),
 
   async created () {
+    const user = userService.getUser();
+    this.isCommitente = (!!user?.role && user.role === Role.Commitente);
+    this.isAdmin = (!!user?.role && user.role >= Role.Admin);
+    if (this.isCommitente) {
+      this.headers.pop();
+    }
+
     [
       this.ncs,
-      this.records,
+      // this.records,
       this.users,
       this.libraries,
       this.formats,
@@ -168,7 +226,7 @@ export default Vue.extend({
       this.languages
     ] = await Promise.all([
       apiService.nonCompliances.getThisYear(),
-      apiService.records.getNumbers().then(rs => rs.map(r => ({ value: r.id ?? -1, text: r.number.toString() }))),
+      // apiService.records.getNumbers().then(rs => rs.map(r => ({ value: r.id ?? -1, text: r.number.toString() }))),
       apiService.users.getAll().then(us => us.map(u => ({ value: u.id ?? -1, text: u.username }))),
       apiService.libraries.getAll().then(ls => ls.map(l => ({ value: l.id ?? -1, text: l.name }))),
       apiService.formats.getAll().then(fs => fs.map(f => ({ value: f.id ?? -1, text: f.name }))),
@@ -176,19 +234,52 @@ export default Vue.extend({
       apiService.nonCompliances.getGroups(),
       apiService.nonCompliances.getLanguages(),
     ]);
+
+    if (this.isCommitente) {
+      this.filters.libraryId = user?.libraryId ?? null;
+    } else {
+      this.filters.userId = user?.id ?? null;
+    }
+
     this.loading = false;
   },
 
   methods: {
 
-    async onlyYearChanged(thisYear: boolean | null) {
+    async reset() {
+      this.filters = {
+        userId: null,
+        libraryId: null,
+        dateStart: new Date(new Date().getFullYear(), 0, 1).toISOString().split('T')[0],
+        dateEnd: null,
+      };
+      await this.applyFilter();
+    },
+
+    async applyFilter() {
+      this.printable = false;
       this.loading = true;
-      this.ncs = thisYear ? await apiService.nonCompliances.getThisYear() : await apiService.nonCompliances.getAll();
+      this.ncs = [];
+      const libraryId = this.filters.libraryId ?? undefined;
+      this.ncs = await apiService.nonCompliances.getFiltered({
+        startDate: this.filters.dateStart ?? undefined,
+        endDate: this.filters.dateEnd ?? undefined,
+        userId: this.filters.userId ?? undefined,
+        libraryId: libraryId,
+      });
       this.loading = false;
+      this.printable = true;
+    },
+
+    async onlyYearChanged(thisYear: boolean | null) {
+      // this.loading = true;
+      // this.ncs = thisYear ? await apiService.nonCompliances.getThisYear() : await apiService.nonCompliances.getAll();
+      // this.loading = false;
+      this.filters.dateStart = thisYear ? new Date(new Date().getFullYear(), 0, 1).toISOString().split('T')[0] : null;
+      this.applyFilter();
     },
 
     fillMissingProps(nc: NonCompliancesDTO) {
-      nc.recordNumber = +(this.records.find(r => r.value === nc.recordId)?.text ?? '');
       nc.libraryName = this.libraries.find(l => l.value === nc.libraryId)?.text ?? '';
       nc.formatName = this.formats.find(r => r.value === nc.formatId)?.text ?? '';
       nc.tagName = this.tags.find(t => t.value === nc.tagId)?.text ?? '';
@@ -212,6 +303,14 @@ export default Vue.extend({
       await apiService.nonCompliances.delete(id);
       done();
     },
+
+    print() {
+      const library = this.filters.libraryId ? (this.libraries.find(l => l.value === this.filters.libraryId)?.text ?? null) : null;
+      const dateStart = this.filters.dateStart ? new Date(this.filters.dateStart) : this.ncs.map(r => new Date(r.dateAdded ?? new Date())).reduce((a, b) => a < b ? a : b, new Date());
+      const dateEnd = this.filters.dateEnd ? new Date(this.filters.dateEnd) : new Date();
+
+      printsService.printNC(library, dateStart, dateEnd, this.ncs.map(r => ({ ...r })));
+    }
 
   },
 });

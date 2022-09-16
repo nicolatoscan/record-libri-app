@@ -18,7 +18,7 @@ export default Vue.extend({
     async print () {
       const records = await apiService.records.getAll();
 
-      printsService.print('Lib test', new Date(), new Date(), [ 
+      printsService.printRecords('Lib test', new Date(), new Date(), [ 
         ...records,
         ...records,
         ...records,
