@@ -58,6 +58,7 @@
             label="Numero record"
             v-model="slotProps.editedItem.recordNumber"
             :rules="recordRules"
+            type="number"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -288,12 +289,14 @@ export default Vue.extend({
     },
 
     async add(nc: NonCompliancesDTO, done: () => void) {
+      nc.recordNumber = +nc.recordNumber;
       nc.id = await apiService.nonCompliances.add(nc);
       this.fillMissingProps(nc);
       done();
     },
 
     async update(id: number, nc: NonCompliancesDTO, done: () => void) {
+      nc.recordNumber = +nc.recordNumber;
       await apiService.nonCompliances.update(id, nc);
       this.fillMissingProps(nc);
       done();
