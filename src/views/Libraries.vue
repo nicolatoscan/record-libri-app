@@ -13,6 +13,7 @@
       <v-row>
         <v-col cols="12" sm="12" md="12">
           <v-text-field
+            autofocus
             label="Nome"
             v-model="slotProps.editedItem.name" 
             :rules="nameRules"

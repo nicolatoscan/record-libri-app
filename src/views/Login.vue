@@ -3,12 +3,13 @@
     <v-layout wrap>
       <v-flex sm12 md6 offset-md3>
         <v-card class="elevation-12">
-          <v-toolbar dark color="primary">
-            <v-toolbar-title class="flex text-center"><h4>Login</h4></v-toolbar-title>
-          </v-toolbar>
-          <v-card-text>
-            <v-form v-model="isFormValid">
+          <v-form v-model="isFormValid" @keyup.native.enter="isFormValid && !loading && login()" onSubmit="return false;">
+            <v-toolbar dark color="primary">
+              <v-toolbar-title class="flex text-center"><h4>Login</h4></v-toolbar-title>
+            </v-toolbar>
+            <v-card-text>
               <v-text-field
+                autofocus
                 v-model="username"
                 prepend-icon="mdi-account"
                 name="username"
@@ -27,15 +28,15 @@
                 required
                 :rules="passwordRules"
               ></v-text-field>
-            </v-form>
-          </v-card-text>
-          <v-alert class="ma-4" border="left" color="error" v-if="error" >Nome utente o password non validi</v-alert>
-          <v-card-actions class="pa-4">
-            <v-spacer></v-spacer>
-            <v-btn color="primary" :disabled="!isFormValid || loading" @click="login()" @keyup.enter="login()">Login</v-btn>
-            <v-spacer></v-spacer>
-          </v-card-actions>
-          <v-progress-linear :active="loading" indeterminate absolute bottom></v-progress-linear>
+            </v-card-text>
+            <v-alert class="ma-4" border="left" color="error" v-if="error" >Nome utente o password non validi</v-alert>
+            <v-card-actions class="pa-4">
+              <v-spacer></v-spacer>
+              <v-btn color="primary" :disabled="!isFormValid || loading" @click="login()">Login</v-btn>
+              <v-spacer></v-spacer>
+            </v-card-actions>
+            <v-progress-linear :active="loading" indeterminate absolute bottom></v-progress-linear>
+          </v-form>
         </v-card>
       </v-flex>
     </v-layout>

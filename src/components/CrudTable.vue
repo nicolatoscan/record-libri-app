@@ -14,29 +14,34 @@
             </slot>
           </template>
           <v-card>
-            <v-progress-linear :active="savingLoading" indeterminate absolute bottom></v-progress-linear>
-            <v-toolbar dark color="primary">
-              <v-toolbar-title class="flex text-center text-h5">{{formTitle}}</v-toolbar-title>
-            </v-toolbar>
 
-            <v-card-text>
-              <v-container>
-                <v-form v-model="isFormValid" :readonly="readonly">
+            <v-form v-model="isFormValid" :readonly="readonly" @keyup.native.enter="save" onSubmit="return false;">
+
+              <v-progress-linear :active="savingLoading" indeterminate absolute bottom></v-progress-linear>
+              <v-toolbar dark color="primary">
+                <v-toolbar-title class="flex text-center text-h5">{{formTitle}}</v-toolbar-title>
+              </v-toolbar>
+
+
+              <v-card-text>
+                <v-container>
                   <slot name="edit-form" v-bind="{ editedItem, editedId }"></slot>
-                </v-form>
-              </v-container>
-            </v-card-text>
+                </v-container>
+              </v-card-text>
+              
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <div v-if="readonly">
+                  <v-btn color="primary" class="ma-1" text @click="close">Chiudi</v-btn>
+                </div>
+                <div v-else>
+                  <v-btn color="primary" class="ma-1" text @click="close">Annulla</v-btn>
+                  <v-btn color="primary" class="ma-1" :disabled="!isFormValid" @click="save">Salva</v-btn>
+                </div>
+              </v-card-actions>
 
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <div v-if="readonly">
-                <v-btn color="primary" class="ma-1" text @click="close">Chiudi</v-btn>
-              </div>
-              <div v-else>
-                <v-btn color="primary" class="ma-1" text @click="close">Annulla</v-btn>
-                <v-btn color="primary" class="ma-1" :disabled="!isFormValid" @click="save">Salva</v-btn>
-              </div>
-            </v-card-actions>
+            </v-form>
+
           </v-card>
         </v-dialog>
         <v-dialog v-model="dialogDelete" max-width="500px">

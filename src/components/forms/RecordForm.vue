@@ -3,10 +3,12 @@
     <v-row class="mx-12">
       <v-col cols="6" sm="12" md="6">
         <v-text-field
+          autofocus
           label="Numero"
           v-model="editedItem.number"
           :rules="numberRules"
           type="number"
+          ref="toFocus"
         ></v-text-field>
       </v-col>
       <v-col cols="6" sm="12" md="6">
@@ -103,6 +105,10 @@ export default Vue.extend({
     setIsAuthority (isAuthority: boolean) {
       this.editedItem.authorName = isAuthority ? '' : null;
       this.isAuthority = isAuthority;
+    },
+
+    setFocus () {
+      (this.$refs['toFocus'] as any).focus();
     }
   }
 });
