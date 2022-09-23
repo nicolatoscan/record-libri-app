@@ -2,25 +2,28 @@
   <div>
     <v-col>
       <v-card class="mb-10 pb-5" :loading="loading">
-        <v-toolbar dark color="primary">
-          <v-toolbar-title class="flex text-center text-h5">Aggiungi Record</v-toolbar-title>
-        </v-toolbar>
+        <v-form v-model="isAddFormValid" @keyup.native.enter="add" onSubmit="return false;"> 
+          <v-toolbar dark color="primary">
+            <v-toolbar-title class="flex text-center text-h5">Aggiungi Record</v-toolbar-title>
+          </v-toolbar>
 
-        <v-container>
-          <v-form v-model="isAddFormValid"> 
-            <record-form
-              :editedItem="addingItem"
-              :types="types" :founds="founds" :formats="formats" :libraries="libraries"
-            />
+          <v-container>
+              <record-form :editedItem="addingItem"
+                :types="types"
+                :founds="founds"
+                :formats="formats"
+                :libraries="libraries"
+                ref="recordForm" 
+              />
+            </v-container>
+            
+            <v-card-actions>
+              <v-spacer />
+              <v-btn color="primary" @click="add" :disabled="!isAddFormValid">Aggiungi</v-btn>
+              <v-spacer />
+            </v-card-actions>
           </v-form>
-        </v-container>
-
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="primary" @click="add" :disabled="!isAddFormValid">Aggiungi</v-btn>
-          <v-spacer />
-        </v-card-actions>
-      </v-card>
+        </v-card>
 
       <crud-table
         title="Ultimi record inseriti"
@@ -142,6 +145,8 @@ export default Vue.extend({
       } else {
         this.error = true;
       }
+
+      (this.$refs['recordForm'] as any).setFocus();
 
     },
 
