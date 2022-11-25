@@ -30,6 +30,12 @@
     <Menu />
 
     <template v-slot:append>
+      <div class="pa-2">
+        <v-row align="center" justify="space-around">
+          <a href="http://www.libriliberi.bz.it/RecordLibri/login.php" target="_blank" v-if="!mini" class="pa-2">Record Libri Legacy</a>
+        </v-row>
+      </div>
+
       <v-divider />
 
       <v-list-item class="px-2">
